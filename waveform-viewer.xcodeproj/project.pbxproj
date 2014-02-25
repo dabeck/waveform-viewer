@@ -362,6 +362,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "waveform-viewer/waveform-viewer-Prefix.pch";
 				INFOPLIST_FILE = "waveform-viewer/waveform-viewer-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -375,6 +376,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "waveform-viewer/waveform-viewer-Prefix.pch";
 				INFOPLIST_FILE = "waveform-viewer/waveform-viewer-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -439,6 +441,7 @@
 				654F2EF118BC9E2700B870B8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		654F2EF218BC9E2700B870B8 /* Build configuration list for PBXNativeTarget "waveform-viewerTests" */ = {
 			isa = XCConfigurationList;
@@ -447,6 +450,7 @@
 				654F2EF418BC9E2700B870B8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
