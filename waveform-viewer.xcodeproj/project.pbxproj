@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		507228A7B05A4C5281211832 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ACF787A715640C3A89983D2 /* libPods.a */; };
 		654F2EC718BC9E2700B870B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654F2EC618BC9E2700B870B8 /* Foundation.framework */; };
 		654F2EC918BC9E2700B870B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654F2EC818BC9E2700B870B8 /* CoreGraphics.framework */; };
 		654F2ECB18BC9E2700B870B8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654F2ECA18BC9E2700B870B8 /* UIKit.framework */; };
@@ -48,6 +49,8 @@
 		654F2EE718BC9E2700B870B8 /* waveform-viewerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "waveform-viewerTests-Info.plist"; sourceTree = "<group>"; };
 		654F2EE918BC9E2700B870B8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		654F2EEB18BC9E2700B870B8 /* waveform_viewerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = waveform_viewerTests.m; sourceTree = "<group>"; };
+		6ACF787A715640C3A89983D2 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7CA803F2397F4AF081CCF4C6 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +61,7 @@
 				654F2EC918BC9E2700B870B8 /* CoreGraphics.framework in Frameworks */,
 				654F2ECB18BC9E2700B870B8 /* UIKit.framework in Frameworks */,
 				654F2EC718BC9E2700B870B8 /* Foundation.framework in Frameworks */,
+				507228A7B05A4C5281211832 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +85,7 @@
 				654F2EE518BC9E2700B870B8 /* waveform-viewerTests */,
 				654F2EC518BC9E2700B870B8 /* Frameworks */,
 				654F2EC418BC9E2700B870B8 /* Products */,
+				7CA803F2397F4AF081CCF4C6 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -100,6 +105,7 @@
 				654F2EC818BC9E2700B870B8 /* CoreGraphics.framework */,
 				654F2ECA18BC9E2700B870B8 /* UIKit.framework */,
 				654F2EDF18BC9E2700B870B8 /* XCTest.framework */,
+				6ACF787A715640C3A89983D2 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -109,7 +115,9 @@
 			children = (
 				654F2ED518BC9E2700B870B8 /* AppDelegate.h */,
 				654F2ED618BC9E2700B870B8 /* AppDelegate.m */,
-				654F2ED818BC9E2700B870B8 /* Images.xcassets */,
+				658FAA2B18C08AD4006857FD /* Models */,
+				658FAA2C18C08ADC006857FD /* Views */,
+				658FAA2D18C08AE1006857FD /* Controllers */,
 				654F2ECD18BC9E2700B870B8 /* Supporting Files */,
 			);
 			path = "waveform-viewer";
@@ -118,12 +126,13 @@
 		654F2ECD18BC9E2700B870B8 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				654F2ED818BC9E2700B870B8 /* Images.xcassets */,
 				654F2ECE18BC9E2700B870B8 /* waveform-viewer-Info.plist */,
 				654F2ECF18BC9E2700B870B8 /* InfoPlist.strings */,
 				654F2ED218BC9E2700B870B8 /* main.m */,
 				654F2ED418BC9E2700B870B8 /* waveform-viewer-Prefix.pch */,
 			);
-			name = "Supporting Files";
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		654F2EE518BC9E2700B870B8 /* waveform-viewerTests */ = {
@@ -144,6 +153,27 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		658FAA2B18C08AD4006857FD /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		658FAA2C18C08ADC006857FD /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		658FAA2D18C08AE1006857FD /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -151,9 +181,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 654F2EEF18BC9E2700B870B8 /* Build configuration list for PBXNativeTarget "waveform-viewer" */;
 			buildPhases = (
+				CBD2BEE9BF0C403581BB3819 /* Check Pods Manifest.lock */,
 				654F2EBF18BC9E2700B870B8 /* Sources */,
 				654F2EC018BC9E2700B870B8 /* Frameworks */,
 				654F2EC118BC9E2700B870B8 /* Resources */,
+				F9B857CD50F94701AE551797 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -233,6 +265,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		CBD2BEE9BF0C403581BB3819 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		F9B857CD50F94701AE551797 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		654F2EBF18BC9E2700B870B8 /* Sources */ = {
@@ -356,6 +421,7 @@
 		};
 		654F2EF018BC9E2700B870B8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7CA803F2397F4AF081CCF4C6 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -370,6 +436,7 @@
 		};
 		654F2EF118BC9E2700B870B8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7CA803F2397F4AF081CCF4C6 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
