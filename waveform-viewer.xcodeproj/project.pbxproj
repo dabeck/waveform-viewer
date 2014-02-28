@@ -436,8 +436,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "waveform-viewer/waveform-viewer-Prefix.pch";
-				INFOPLIST_FILE = "waveform-viewer/waveform-viewer-Info.plist";
+				GCC_PREFIX_HEADER = "waveform-viewer/Supporting Files/waveform-viewer-Prefix.pch";
+				INFOPLIST_FILE = "waveform-viewer/Supporting Files/waveform-viewer-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -451,8 +451,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "waveform-viewer/waveform-viewer-Prefix.pch";
-				INFOPLIST_FILE = "waveform-viewer/waveform-viewer-Info.plist";
+				GCC_PREFIX_HEADER = "waveform-viewer/Supporting Files/waveform-viewer-Prefix.pch";
+				INFOPLIST_FILE = "waveform-viewer/Supporting Files/waveform-viewer-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
