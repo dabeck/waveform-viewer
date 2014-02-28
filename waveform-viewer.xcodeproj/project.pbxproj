@@ -20,6 +20,8 @@
 		654F2EE218BC9E2700B870B8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654F2ECA18BC9E2700B870B8 /* UIKit.framework */; };
 		654F2EEA18BC9E2700B870B8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 654F2EE818BC9E2700B870B8 /* InfoPlist.strings */; };
 		654F2EEC18BC9E2700B870B8 /* waveform_viewerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 654F2EEB18BC9E2700B870B8 /* waveform_viewerTests.m */; };
+		658FAA2F18C08D97006857FD /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 658FAA2E18C08D97006857FD /* Storyboard.storyboard */; };
+		658FAA3218C08DE9006857FD /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 658FAA3118C08DE9006857FD /* MainViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,9 @@
 		654F2EE718BC9E2700B870B8 /* waveform-viewerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "waveform-viewerTests-Info.plist"; sourceTree = "<group>"; };
 		654F2EE918BC9E2700B870B8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		654F2EEB18BC9E2700B870B8 /* waveform_viewerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = waveform_viewerTests.m; sourceTree = "<group>"; };
+		658FAA2E18C08D97006857FD /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
+		658FAA3018C08DE9006857FD /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		658FAA3118C08DE9006857FD /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		6ACF787A715640C3A89983D2 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CA803F2397F4AF081CCF4C6 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -163,6 +168,7 @@
 		658FAA2C18C08ADC006857FD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				658FAA2E18C08D97006857FD /* Storyboard.storyboard */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -170,6 +176,8 @@
 		658FAA2D18C08AE1006857FD /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				658FAA3018C08DE9006857FD /* MainViewController.h */,
+				658FAA3118C08DE9006857FD /* MainViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -253,6 +261,7 @@
 			files = (
 				654F2ED118BC9E2700B870B8 /* InfoPlist.strings in Resources */,
 				654F2ED918BC9E2700B870B8 /* Images.xcassets in Resources */,
+				658FAA2F18C08D97006857FD /* Storyboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,6 +314,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				654F2ED718BC9E2700B870B8 /* AppDelegate.m in Sources */,
+				658FAA3218C08DE9006857FD /* MainViewController.m in Sources */,
 				654F2ED318BC9E2700B870B8 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
