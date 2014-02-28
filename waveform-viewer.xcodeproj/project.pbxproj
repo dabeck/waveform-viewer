@@ -22,6 +22,10 @@
 		654F2EEC18BC9E2700B870B8 /* waveform_viewerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 654F2EEB18BC9E2700B870B8 /* waveform_viewerTests.m */; };
 		658FAA2F18C08D97006857FD /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 658FAA2E18C08D97006857FD /* Storyboard.storyboard */; };
 		658FAA3218C08DE9006857FD /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 658FAA3118C08DE9006857FD /* MainViewController.m */; };
+		658FAA3E18C0A1EC006857FD /* VCD.m in Sources */ = {isa = PBXBuildFile; fileRef = 658FAA3718C0A1EC006857FD /* VCD.m */; };
+		658FAA3F18C0A1EC006857FD /* VCDParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 658FAA3918C0A1EC006857FD /* VCDParser.m */; };
+		658FAA4018C0A1EC006857FD /* VCDSignal.m in Sources */ = {isa = PBXBuildFile; fileRef = 658FAA3B18C0A1EC006857FD /* VCDSignal.m */; };
+		658FAA4118C0A1EC006857FD /* VCDValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 658FAA3D18C0A1EC006857FD /* VCDValue.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +58,15 @@
 		658FAA2E18C08D97006857FD /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		658FAA3018C08DE9006857FD /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		658FAA3118C08DE9006857FD /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		658FAA3518C0A1EC006857FD /* objCVCD-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "objCVCD-Prefix.pch"; sourceTree = "<group>"; };
+		658FAA3618C0A1EC006857FD /* VCD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VCD.h; sourceTree = "<group>"; };
+		658FAA3718C0A1EC006857FD /* VCD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VCD.m; sourceTree = "<group>"; };
+		658FAA3818C0A1EC006857FD /* VCDParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VCDParser.h; sourceTree = "<group>"; };
+		658FAA3918C0A1EC006857FD /* VCDParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VCDParser.m; sourceTree = "<group>"; };
+		658FAA3A18C0A1EC006857FD /* VCDSignal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VCDSignal.h; sourceTree = "<group>"; };
+		658FAA3B18C0A1EC006857FD /* VCDSignal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VCDSignal.m; sourceTree = "<group>"; };
+		658FAA3C18C0A1EC006857FD /* VCDValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VCDValue.h; sourceTree = "<group>"; };
+		658FAA3D18C0A1EC006857FD /* VCDValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VCDValue.m; sourceTree = "<group>"; };
 		6ACF787A715640C3A89983D2 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CA803F2397F4AF081CCF4C6 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -123,6 +136,7 @@
 				658FAA2B18C08AD4006857FD /* Models */,
 				658FAA2C18C08ADC006857FD /* Views */,
 				658FAA2D18C08AE1006857FD /* Controllers */,
+				658FAA3318C0A1C6006857FD /* Externals */,
 				654F2ECD18BC9E2700B870B8 /* Supporting Files */,
 			);
 			path = "waveform-viewer";
@@ -182,6 +196,30 @@
 			path = Controllers;
 			sourceTree = "<group>";
 		};
+		658FAA3318C0A1C6006857FD /* Externals */ = {
+			isa = PBXGroup;
+			children = (
+				658FAA3418C0A1EC006857FD /* objCVCD */,
+			);
+			path = Externals;
+			sourceTree = "<group>";
+		};
+		658FAA3418C0A1EC006857FD /* objCVCD */ = {
+			isa = PBXGroup;
+			children = (
+				658FAA3518C0A1EC006857FD /* objCVCD-Prefix.pch */,
+				658FAA3618C0A1EC006857FD /* VCD.h */,
+				658FAA3718C0A1EC006857FD /* VCD.m */,
+				658FAA3818C0A1EC006857FD /* VCDParser.h */,
+				658FAA3918C0A1EC006857FD /* VCDParser.m */,
+				658FAA3A18C0A1EC006857FD /* VCDSignal.h */,
+				658FAA3B18C0A1EC006857FD /* VCDSignal.m */,
+				658FAA3C18C0A1EC006857FD /* VCDValue.h */,
+				658FAA3D18C0A1EC006857FD /* VCDValue.m */,
+			);
+			path = objCVCD;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -231,6 +269,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Uni Kassel";
 				TargetAttributes = {
+					654F2EC218BC9E2700B870B8 = {
+						DevelopmentTeam = S8CVX2F4AZ;
+					};
 					654F2EDD18BC9E2700B870B8 = {
 						TestTargetID = 654F2EC218BC9E2700B870B8;
 					};
@@ -313,9 +354,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				658FAA3F18C0A1EC006857FD /* VCDParser.m in Sources */,
 				654F2ED718BC9E2700B870B8 /* AppDelegate.m in Sources */,
+				658FAA4118C0A1EC006857FD /* VCDValue.m in Sources */,
+				658FAA3E18C0A1EC006857FD /* VCD.m in Sources */,
 				658FAA3218C08DE9006857FD /* MainViewController.m in Sources */,
 				654F2ED318BC9E2700B870B8 /* main.m in Sources */,
+				658FAA4018C0A1EC006857FD /* VCDSignal.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -435,6 +480,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "waveform-viewer/Supporting Files/waveform-viewer-Prefix.pch";
 				INFOPLIST_FILE = "waveform-viewer/Supporting Files/waveform-viewer-Info.plist";
@@ -450,6 +496,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "waveform-viewer/Supporting Files/waveform-viewer-Prefix.pch";
 				INFOPLIST_FILE = "waveform-viewer/Supporting Files/waveform-viewer-Info.plist";
