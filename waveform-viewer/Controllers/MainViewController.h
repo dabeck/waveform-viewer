@@ -8,6 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MainViewController : UIViewController
+#import <CorePlot/CorePlot-CocoaTouch.h>
+
+@interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTBarPlotDelegate>
+{
+	CPTXYGraph *graph;
+
+	IBOutlet CPTGraphHostingView *scatterPlotView;
+	NSMutableArray *dataForPlot;
+}
+
+@property (nonatomic, strong) NSMutableArray *dataForPlot;
+
+- (void)constructScatterPlot;
 
 @end
