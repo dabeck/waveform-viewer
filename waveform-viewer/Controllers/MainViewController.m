@@ -28,6 +28,7 @@
 {
     [super viewDidAppear:animated];
 	
+	scatterPlotView.frame = self.view.bounds;
 }
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -39,11 +40,11 @@
 {
     if ( UIInterfaceOrientationIsLandscape(fromInterfaceOrientation) ) {
         // Move the plots into place for portrait
-        scatterPlotView.frame = CGRectMake(20.0, 55.0, 728.0, 556.0);
+        scatterPlotView.frame = self.view.bounds;
     }
     else {
         // Move the plots into place for landscape
-        scatterPlotView.frame = CGRectMake(20.0, 51.0, 628.0, 677.0);
+        scatterPlotView.frame = self.view.bounds;
     }
 }
 
