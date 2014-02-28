@@ -174,17 +174,17 @@
 
 -(CPTLayer *)dataLabelForPlot:(CPTPlot *)plot recordIndex:(NSUInteger)index
 {
-    static CPTMutableTextStyle *whiteText = nil;
+    static CPTMutableTextStyle *text = nil;
 	
-    if ( !whiteText ) {
-        whiteText       = [[CPTMutableTextStyle alloc] init];
-        whiteText.color = [CPTColor blackColor];
+    if ( !text ) {
+        text       = [[CPTMutableTextStyle alloc] init];
+        text.color = [CPTColor blackColor];
     }
 	
     CPTTextLayer *newLayer = nil;
     
     if ( [plot isKindOfClass:[CPTScatterPlot class]] ) {
-        newLayer = [[CPTTextLayer alloc] initWithText:[NSString stringWithFormat:@"%lu", (unsigned long)index] style:whiteText];
+        newLayer = [[CPTTextLayer alloc] initWithText:[NSString stringWithFormat:@"%lu", (unsigned long)index] style:text];
     }
 	
     return newLayer;
