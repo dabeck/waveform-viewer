@@ -12,15 +12,14 @@
 #import "VCDParser.h"
 #import "VCDSignal.h"
 #import "VCDValue.h"
-#import "ScatterView.h"
 
 const int CELL_SIZE_LANDSCAPE = 48;
 const int CELL_SIZE_PORTRAIT = 48;
 
-@interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTBarPlotDelegate, UITableViewDelegate, UITableViewDataSource, ScatterViewDelegate>
+@interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTBarPlotDelegate, UITableViewDelegate, UITableViewDataSource>
 {
+    //IBOutlet UIView *mainView;
     IBOutlet UIView *mainView;
-    IBOutlet UIScrollView *scrollView;
 	CPTXYGraph *graph;
 	IBOutlet CPTGraphHostingView *scatterPlotView;
 	NSMutableArray *dataForPlot;

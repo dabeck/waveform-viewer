@@ -22,57 +22,10 @@
     [super viewDidLoad];
     [tblView setDelegate:self];
     [tblView setDataSource:self];
-    ScatterView *scatterView;
-    [scatterView setUserInteractionEnabled:YES];
-    [scatterView setDelegate:self];
-    [scatterPlotView addSubview: scatterView];
-    //UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-    //[scatterPlotView addGestureRecognizer:panRecognizer];
+    
     [self loadSignals];
     
     
-}
-
-- (void)pan:(id)sender {
-    UIPanGestureRecognizer *recognizer = (UIPanGestureRecognizer*) sender;
-    scatterPlotView.center = [recognizer locationInView:scatterPlotView];
-    NSLog(@"Pan");
-}
-
-- (void) touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
-{
-    // When a touch starts, get the current location in the view
-    currentPoint = [[touches anyObject] locationInView:scatterPlotView];
-}
-
-- (void) touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event
-{
-    // Get active location upon move
-    CGPoint activePoint = [[touches anyObject] locationInView:self.view];
-    
-    // Determine new point based on where the touch is now located
-    CGPoint newPoint = CGPointMake(self.view.center.x + (activePoint.x - currentPoint.x),
-                                   currentPoint.y);
-    
-    //--------------------------------------------------------
-    // Make sure we stay within the bounds of the parent view
-    //--------------------------------------------------------
-    float midPointX = CGRectGetMidX(self.view.bounds);
-    // If too far right...
-    if (newPoint.x > self.view.superview.bounds.size.width  - midPointX)
-        newPoint.x = self.view.superview.bounds.size.width - midPointX;
-    else if (newPoint.x < midPointX)  // If too far left...
-        newPoint.x = midPointX;
-    
-    float midPointY = CGRectGetMidY(self.view.bounds);
-    // If too far down...
-    /*if (newPoint.y > self.view.superview.bounds.size.height  - midPointY)
-        newPoint.y = self.view.superview.bounds.size.height - midPointY;
-    else if (newPoint.y < midPointY)  // If too far up...
-        newPoint.y = midPointY;
-    */
-    // Set new center location
-    self.view.center = newPoint;
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -116,11 +69,13 @@
     cell.textLabel.text = [self.values objectAtIndex:indexPath.row];
     return cell;
 }
+
 //load Signals from vcd file
--(void) loadSignals{
+- (void)loadSignals{
     NSMutableString *str = [[NSMutableString alloc] init];
     self.values = [NSMutableArray new];
-    NSString* filePath = @"/Users/student/Desktop/nida/waveform-viewer Kopie/waveform-viewer/Externals/simple.vcd";
+    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"simple" ofType:@"vcd"];
+
     [VCD loadWithPath:filePath callback:^(VCD *vcd) {
         if(vcd == nil) {
             NSLog(@"VCD Parsing Error!");
@@ -152,7 +107,7 @@
 #pragma mark -
 #pragma mark Plot construction methods
 
--(void)constructScatterPlot
+- (void)constructScatterPlot
 {
     int coordinate = self.values.count*-1;
     // Create graph from theme
@@ -169,13 +124,13 @@
     // Setup plot space
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)graph.defaultPlotSpace;
     plotSpace.allowsUserInteraction = YES;
-    plotSpace.xRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(-0.5) length:CPTDecimalFromDouble(10)];
+    plotSpace.xRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
     plotSpace.yRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.values.count) length:CPTDecimalFromDouble(coordinate)];
 	
     // Axes
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)graph.axisSet;
     CPTXYAxis *x          = axisSet.xAxis;
-    x.majorIntervalLength         = CPTDecimalFromDouble(0.5);
+    x.majorIntervalLength         = CPTDecimalFromDouble(1.0);
     x.orthogonalCoordinateDecimal = CPTDecimalFromDouble(0.0);
     x.minorTicksPerInterval       = 2;
     NSArray *exclusionRanges = [NSArray arrayWithObjects:
@@ -202,7 +157,7 @@
 	
     // Create a blue plot area
     CPTScatterPlot *boundLinePlot = [[CPTScatterPlot alloc] init];
-    boundLinePlot.identifier = @"Blue Plot";
+    boundLinePlot.identifier = @"BluePlot";
 	
     lineStyle            = [boundLinePlot.dataLineStyle mutableCopy];
     lineStyle.miterLimit = 1.0;
@@ -221,52 +176,53 @@
     // Add some initial data
     self.numbValues = [NSMutableArray new];
     NSMutableArray *contentArray = [NSMutableArray arrayWithCapacity:100];
-    NSUInteger i;
-    NSUInteger i2;
     const char *zero = "0";
     const char *one = "1";
     const char *undef = "x";
     const char *high = "z";
     int time = 0;
     int values = 0;
+    
+//    for (VCDSignal *sig in [self.signals allKeys])
 
     
-    for (VCDSignal *sig in [self.signals allValues]) {
-        for (VCDValue *value in [sig valueForKey:@"_values"]){
-            NSNumber *x = [NSNumber numberWithInt:time];
+//    for (VCDSignal *sig in [self.signals allValues]) {
+        for (VCDValue *value in [[self.signals objectForKey:@"z [5]"] valueForKey:@"_values"]){
+            NSNumber *x = [NSNumber numberWithInt:[value time]];
             NSNumber *y;
             char *s = &[value cValue][0];
             if(strcmp(s, zero) == 0){
                 NSLog(@"%@",value);
                 NSLog(@"0");
-                NSLog(@"%s value", [value cValue]);
-                y = [NSNumber numberWithFloat:(values + 0.2)];
+                NSLog(@"%s value, %d time", [value cValue], [value time]);
+                y = [NSNumber numberWithFloat:(values + 0.8)];
             }
             if(strcmp(s, one) == 0){
                 NSLog(@"%@",value);
                 NSLog(@"1");
-                NSLog(@"%s value", [value cValue]);
-                y = [NSNumber numberWithFloat:(values + 0.8)];
+                NSLog(@"%s value %d time", [value cValue], [value time]);
+                y = [NSNumber numberWithFloat:(values + 0.2)];
             }
-            else if(strcmp(s, undef) == 0){
-                NSLog(@"%@",value);
-                NSLog(@"undef");
-                NSLog(@"%s", [value cValue]);
-                y = [NSNumber numberWithFloat:(values + 0.5)];
-            }
-            else if(strcmp(s, high) == 0){
-                NSLog(@"%@",value);
-                NSLog(@"high");
-                NSLog(@"%s", [value cValue]);
-                y = [NSNumber numberWithFloat:(values + 0.5)];
-            }
+//            else if(strcmp(s, undef) == 0){
+//                NSLog(@"%@",value);
+//                NSLog(@"undef");
+//                NSLog(@"%s", [value cValue]);
+//                y = [NSNumber numberWithFloat:(values + 0.5)];
+//            }
+//            else if(strcmp(s, high) == 0){
+//                NSLog(@"%@",value);
+//                NSLog(@"high");
+//                NSLog(@"%s", [value cValue]);
+//                y = [NSNumber numberWithFloat:(values + 0.5)];
+//            }
             [contentArray addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:x, @"x", y, @"y", nil]];
-            time++;
+//            time++;
+            [self.numbValues addObject:value];
         }
-        [self.numbValues addObject: [NSNumber numberWithInt:time]];
-        time=0;
-        values++;
-    }
+//        [self.numbValues addObject: [NSNumber numberWithInt:time]];
+//        time=0;
+//        values++;
+//    }
 
     
     /*for(i2 = 0; i2 < self.values.count; i2++){
@@ -300,7 +256,8 @@
 
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
 {
-	return [dataForPlot count];
+    VCDValue *value = [self.numbValues firstObject];
+	return 3 ;
 }
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
@@ -308,21 +265,28 @@
     NSDecimalNumber *num = nil;
 	
     //if ( index % 81) {
-    if ([self.numbValues indexOfObject: [NSNumber numberWithInt:index]] != NSNotFound) {
-		NSString *key = (fieldEnum == CPTScatterPlotFieldX ? @"x" : @"y");
-		num = [[dataForPlot objectAtIndex:index] valueForKey:key];
-		// Green plot gets shifted above the blue
-		if ( [(NSString *)plot.identifier isEqualToString : @"Green Plot"] ) {
-			if ( fieldEnum == CPTScatterPlotFieldY ) {
-				num = (NSDecimalNumber *)[NSDecimalNumber numberWithDouble:[num doubleValue] + 1.0];
-			}
-		}
-	}
-	else {
-		num = [NSDecimalNumber notANumber];
-	}
-	
-    return num;
+//    if ([self.numbValues indexOfObject: [NSNumber numberWithInt:index]] != NSNotFound) {
+//		NSString *key = (fieldEnum == CPTScatterPlotFieldX ? @"x" : @"y");
+//		num = [[dataForPlot objectAtIndex:index] valueForKey:key];
+//		// Green plot gets shifted above the blue
+//		if ( [(NSString *)plot.identifier isEqualToString : @"BluePlot"] ) {
+//			if ( fieldEnum == CPTScatterPlotFieldY ) {
+//				num = (NSDecimalNumber *)[NSDecimalNumber numberWithDouble:[num doubleValue] + 1.0];
+//			}
+//		}
+//	}
+//	else {
+//		num = [NSDecimalNumber notANumber];
+//	}
+    VCDValue *value = [self.numbValues firstObject];
+    if ( fieldEnum == CPTScatterPlotFieldY ) {
+        return [@[@0.8,@0.2,@0.2] objectAtIndex:index];
+    }
+    
+    if ( fieldEnum == CPTScatterPlotFieldX ) {
+        return [@[@0,@1,@2] objectAtIndex:index];
+    }
+    return nil;
 }
 
 -(CPTLayer *)dataLabelForPlot:(CPTPlot *)plot recordIndex:(NSUInteger)index
@@ -360,8 +324,6 @@
         [mainView setFrame:CGRectMake(0,0,screenWidth, screenHeight)];
         widhtttt = mainView.frame.size.width;
         heightttt = mainView.frame.size.height;
-        [scrollView setFrame:CGRectMake(0,0,screenHeight, screenWidth-48)];
-        [scrollView setContentSize:CGSizeMake(scrollView.frame.size.width, height)];
         [scatterPlotView setFrame: CGRectMake(120,0,scatterPlotView.frame.size.width, height)];
         [tblView setFrame:CGRectMake(0,0,120, height)];
         [coordinateView setFrame:CGRectMake(0,screenWidth-CELL_SIZE_LANDSCAPE,screenWidth, height)];
@@ -377,12 +339,9 @@
         scatterPlotView.frame = self.view.bounds;
         int tbl = tblView.frame.size.height;
         NSLog(@"%i",tbl);
-        [scrollView setFrame:CGRectMake(0,0,screenWidth, screenHeight-48)];
-        [scrollView setContentSize:CGSizeMake(scatterPlotView.frame.size.width, height)];
         tbl = tblView.frame.size.height;
         NSLog(@"%i",tbl);
-        int scroll = scrollView.frame.size.height;
-        int plot = scatterPlotView.frame.size.height;
+
         [scatterPlotView setFrame: CGRectMake(120,0,scatterPlotView.frame.size.width, height)];
         [tblView setFrame:CGRectMake(0,0,120, height)];
         [coordinateView setFrame:CGRectMake(0,screenHeight-48,screenWidth, height)];

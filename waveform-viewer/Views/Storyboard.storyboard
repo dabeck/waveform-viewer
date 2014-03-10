@@ -13,36 +13,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" id="V85-AV-7l0" customClass="UIScrollView">
-                                <rect key="frame" x="0.0" y="0.0" width="1024" height="694"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <view autoresizesSubviews="NO" contentMode="right" id="QeC-I8-GHT" customClass="CPTGraphHostingView">
-                                        <rect key="frame" x="174" y="0.0" width="850" height="694"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                        <accessibility key="accessibilityConfiguration">
-                                            <accessibilityTraits key="traits" none="YES" notEnabled="YES"/>
-                                        </accessibility>
-                                    </view>
-                                    <tableView autoresizesSubviews="NO" contentMode="center" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="48" sectionHeaderHeight="22" sectionFooterHeight="22" id="LpS-Rr-HIc">
-                                        <rect key="frame" x="0.0" y="0.0" width="166" height="694"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <prototypes>
-                                            <tableViewCell autoresizesSubviews="NO" contentMode="center" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="48" id="zdG-YG-IHY">
-                                                <rect key="frame" x="0.0" y="22" width="166" height="48"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                                <tableViewCellContentView key="contentView" autoresizesSubviews="NO" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" tableViewCell="zdG-YG-IHY" id="fgH-Vf-wAh">
-                                                    <rect key="frame" x="0.0" y="0.0" width="166" height="47"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                </tableViewCellContentView>
-                                            </tableViewCell>
-                                        </prototypes>
-                                    </tableView>
-                                </subviews>
+                            <view autoresizesSubviews="NO" contentMode="right" id="QeC-I8-GHT" customClass="CPTGraphHostingView">
+                                <rect key="frame" x="174" y="0.0" width="850" height="712"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" notEnabled="YES"/>
+                                </accessibility>
                             </view>
+                            <tableView autoresizesSubviews="NO" contentMode="center" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="48" sectionHeaderHeight="22" sectionFooterHeight="22" id="LpS-Rr-HIc">
+                                <rect key="frame" x="0.0" y="0.0" width="175" height="712"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell autoresizesSubviews="NO" contentMode="center" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="48" id="zdG-YG-IHY">
+                                        <rect key="frame" x="0.0" y="22" width="175" height="48"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" autoresizesSubviews="NO" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" tableViewCell="zdG-YG-IHY" id="fgH-Vf-wAh">
+                                            <rect key="frame" x="0.0" y="0.0" width="175" height="47"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                             <view contentMode="scaleToFill" id="lHa-Ax-3v9">
                                 <rect key="frame" x="0.0" y="720" width="1024" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -56,15 +49,14 @@
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="coordinateView" destination="lHa-Ax-3v9" id="uhd-eY-7Nr"/>
-                        <outlet property="mainView" destination="eHJ-UU-KUe" id="6Nz-bT-mPZ"/>
+                        <outlet property="mainView" destination="eHJ-UU-KUe" id="D8C-XG-a7y"/>
                         <outlet property="scatterPlotView" destination="QeC-I8-GHT" id="hZ6-7m-GmX"/>
-                        <outlet property="scrollView" destination="V85-AV-7l0" id="zgg-OH-Bsx"/>
                         <outlet property="tblView" destination="LpS-Rr-HIc" id="mFS-9Z-LJy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="24r-kq-3Op" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1494" y="-1195"/>
+            <point key="canvasLocation" x="-1459" y="-1155"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
