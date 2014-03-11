@@ -132,7 +132,7 @@
     
     plotSpace.delegate = self;
     
-    plotSpace.globalXRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(100)];
+    plotSpace.globalXRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(600)]; //TODO: calc max value
     plotSpace.globalYRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.values.count) length:CPTDecimalFromDouble(coordinate)];
     
     plotSpace.xRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
@@ -224,11 +224,19 @@
         NSNumber *number = [f numberFromString:character];
         
         if([number isEqualToNumber:[NSNumber numberWithInt:1]]){
-            number = [NSNumber numberWithInt:(countPlot + 0.2)];
+            number = [NSNumber numberWithFloat:(countPlot + 0.2)];
             return  number;
         }
         else if([number isEqualToNumber:[NSNumber numberWithInt:0]]){
-            number = [NSNumber numberWithInt:(countPlot + 0.8)];
+            number = [NSNumber numberWithFloat:(countPlot + 0.8)];
+            return  number;
+        }
+        else if([character isEqualToString:@"x"]){
+            number = [NSNumber numberWithFloat:(countPlot + 0.5)];
+            return  number;
+        }
+        else if([character isEqualToString:@"z"]){
+            number = [NSNumber numberWithFloat:(countPlot + 0.5)];
             return  number;
         }
         
