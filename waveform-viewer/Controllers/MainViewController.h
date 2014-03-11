@@ -16,7 +16,7 @@
 const int CELL_SIZE_LANDSCAPE = 48;
 const int CELL_SIZE_PORTRAIT = 48;
 
-@interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTBarPlotDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTBarPlotDelegate, CPTPlotSpaceDelegate, UITableViewDelegate, UITableViewDataSource>
 {
     //IBOutlet UIView *mainView;
     IBOutlet UIView *mainView;

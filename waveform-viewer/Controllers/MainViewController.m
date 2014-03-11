@@ -8,7 +8,9 @@
 
 #import "MainViewController.h"
 
-@interface MainViewController ()
+@interface MainViewController () {
+	CGPoint actualPosition;
+}
 
 @end
 
@@ -22,9 +24,9 @@
     [super viewDidLoad];
     [tblView setDelegate:self];
     [tblView setDataSource:self];
-    
+
+	actualPosition = CGPointMake(0, 0);
     [self loadSignals];
-    
     
 }
 
@@ -109,7 +111,7 @@
 
 - (void)constructScatterPlot
 {
-    int coordinate = self.values.count*-1;
+    NSInteger coordinate = self.values.count * -1;
     // Create graph from theme
     graph = [[CPTXYGraph alloc] initWithFrame:CGRectZero];
     CPTTheme *theme = [CPTTheme themeNamed:kCPTPlainWhiteTheme];
@@ -123,33 +125,27 @@
 	
     // Setup plot space
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)graph.defaultPlotSpace;
+
     plotSpace.allowsUserInteraction = YES;
+	plotSpace.delegate = self;
+	
+	plotSpace.globalXRange			= [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(100)]; //TODO: get max value
+	plotSpace.globalYRange			= [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.values.count) length:CPTDecimalFromDouble(coordinate)]; //TODO: get max value
+
     plotSpace.xRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
     plotSpace.yRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.values.count) length:CPTDecimalFromDouble(coordinate)];
-	
+
     // Axes
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)graph.axisSet;
     CPTXYAxis *x          = axisSet.xAxis;
     x.majorIntervalLength         = CPTDecimalFromDouble(1.0);
     x.orthogonalCoordinateDecimal = CPTDecimalFromDouble(0.0);
     x.minorTicksPerInterval       = 2;
-    NSArray *exclusionRanges = [NSArray arrayWithObjects:
-                                [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.99) length:CPTDecimalFromDouble(0.02)],
-                                [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.99) length:CPTDecimalFromDouble(0.02)],
-                                [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(2.99) length:CPTDecimalFromDouble(0.02)],
-                                nil];
-    x.labelExclusionRanges = exclusionRanges;
-	
+
     CPTXYAxis *y = axisSet.yAxis;
     y.majorIntervalLength         = CPTDecimalFromDouble(1.0);
     y.minorTicksPerInterval       = 2;
     y.orthogonalCoordinateDecimal = CPTDecimalFromDouble(0.0);
-    exclusionRanges               = [NSArray arrayWithObjects:
-                                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.99) length:CPTDecimalFromDouble(0.02)],
-                                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.99) length:CPTDecimalFromDouble(0.02)],
-                                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(3.99) length:CPTDecimalFromDouble(0.02)],
-                                     nil];
-    y.labelExclusionRanges = exclusionRanges;
 	
     CPTScatterPlot *dataSourceLinePlot = [[CPTScatterPlot alloc] init];
 	
@@ -176,79 +172,8 @@
     // Add some initial data
     self.numbValues = [NSMutableArray new];
     NSMutableArray *contentArray = [NSMutableArray arrayWithCapacity:100];
-    const char *zero = "0";
-    const char *one = "1";
-    const char *undef = "x";
-    const char *high = "z";
-    int time = 0;
-    int values = 0;
-    
-//    for (VCDSignal *sig in [self.signals allKeys])
 
-    
-//    for (VCDSignal *sig in [self.signals allValues]) {
-        for (VCDValue *value in [[self.signals objectForKey:@"z [5]"] valueForKey:@"_values"]){
-            NSNumber *x = [NSNumber numberWithInt:[value time]];
-            NSNumber *y;
-            char *s = &[value cValue][0];
-            if(strcmp(s, zero) == 0){
-                NSLog(@"%@",value);
-                NSLog(@"0");
-                NSLog(@"%s value, %d time", [value cValue], [value time]);
-                y = [NSNumber numberWithFloat:(values + 0.8)];
-            }
-            if(strcmp(s, one) == 0){
-                NSLog(@"%@",value);
-                NSLog(@"1");
-                NSLog(@"%s value %d time", [value cValue], [value time]);
-                y = [NSNumber numberWithFloat:(values + 0.2)];
-            }
-//            else if(strcmp(s, undef) == 0){
-//                NSLog(@"%@",value);
-//                NSLog(@"undef");
-//                NSLog(@"%s", [value cValue]);
-//                y = [NSNumber numberWithFloat:(values + 0.5)];
-//            }
-//            else if(strcmp(s, high) == 0){
-//                NSLog(@"%@",value);
-//                NSLog(@"high");
-//                NSLog(@"%s", [value cValue]);
-//                y = [NSNumber numberWithFloat:(values + 0.5)];
-//            }
-            [contentArray addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:x, @"x", y, @"y", nil]];
-//            time++;
-            [self.numbValues addObject:value];
-        }
-//        [self.numbValues addObject: [NSNumber numberWithInt:time]];
-//        time=0;
-//        values++;
-//    }
-
-    
-    /*for(i2 = 0; i2 < self.values.count; i2++){
-        for ( i = 0; i < 10; i++ ) {
-            if(i<3 || i>5){
-                NSNumber *x = [NSNumber numberWithFloat:i];
-                NSNumber *y = [NSNumber numberWithFloat:i2 + 0.8];
-                [contentArray addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:x, @"x", y, @"y", nil]];
-            }
-            else{
-                NSNumber *x = [NSNumber numberWithFloat:i];
-                NSNumber *y = [NSNumber numberWithFloat: i2 + 0.2];
-                [contentArray addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:x, @"x", y, @"y", nil]];
-            }
-        
-        }
-    }*/
     self.dataForPlot = contentArray;
-}
-
-#pragma mark -
-#pragma mark CPTBarPlot delegate method
-
--(void)barPlot:(CPTBarPlot *)plot barWasSelectedAtRecordIndex:(NSUInteger)index
-{
-    NSLog(@"barWasSelectedAtRecordIndex %d", index);
 }
 
 #pragma mark -
@@ -256,29 +181,11 @@
 
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
 {
-    VCDValue *value = [self.numbValues firstObject];
 	return 3 ;
 }
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
 {
-    NSDecimalNumber *num = nil;
-	
-    //if ( index % 81) {
-//    if ([self.numbValues indexOfObject: [NSNumber numberWithInt:index]] != NSNotFound) {
-//		NSString *key = (fieldEnum == CPTScatterPlotFieldX ? @"x" : @"y");
-//		num = [[dataForPlot objectAtIndex:index] valueForKey:key];
-//		// Green plot gets shifted above the blue
-//		if ( [(NSString *)plot.identifier isEqualToString : @"BluePlot"] ) {
-//			if ( fieldEnum == CPTScatterPlotFieldY ) {
-//				num = (NSDecimalNumber *)[NSDecimalNumber numberWithDouble:[num doubleValue] + 1.0];
-//			}
-//		}
-//	}
-//	else {
-//		num = [NSDecimalNumber notANumber];
-//	}
-    VCDValue *value = [self.numbValues firstObject];
     if ( fieldEnum == CPTScatterPlotFieldY ) {
         return [@[@0.8,@0.2,@0.2] objectAtIndex:index];
     }
@@ -307,13 +214,40 @@
     return newLayer;
 }
 
+- (CPTPlotRange *)plotSpace:(CPTPlotSpace *)space
+	   willChangePlotRangeTo:(CPTPlotRange *)newRange
+			   forCoordinate:(CPTCoordinate)coordinate {
+	
+    CPTPlotRange *updatedRange = nil;
+	
+    switch (coordinate)
+	{
+		case CPTCoordinateX:
+			if (newRange.locationDouble < 0.0F) {
+				CPTMutablePlotRange *mutableRange = [newRange mutableCopy];
+				mutableRange.location = CPTDecimalFromFloat(0.0);
+				updatedRange = mutableRange;
+			}
+			else {
+				updatedRange = newRange;
+			}
+			break;
+		case CPTCoordinateY:
+			updatedRange = ((CPTXYPlotSpace *)space).globalYRange;
+			break;
+		default:
+			break;
+    }
+    return updatedRange;
+}
+
 -(void) setScreenOrientation{
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     float screenWidth = self.view.frame.size.width;
     float screenHeight = self.view.frame.size.height;
     
     if ( UIInterfaceOrientationIsLandscape(orientation) ) {
-        int height = self.values.count * CELL_SIZE_LANDSCAPE;
+        NSInteger height = self.values.count * CELL_SIZE_LANDSCAPE;
         // Move the plots into place for portrait
         //mainView.frame = self.view.bounds;
         //tblView.frame = self.view.bounds;
@@ -329,7 +263,7 @@
         [coordinateView setFrame:CGRectMake(0,screenWidth-CELL_SIZE_LANDSCAPE,screenWidth, height)];
     }
     else {
-        int height = self.values.count * 48;
+        NSInteger height = self.values.count * 48;
         // Move the plots into place for landscape
         //mainView.frame = self.view.bounds;
         //scatterPlotView.frame = self.view.bounds;
