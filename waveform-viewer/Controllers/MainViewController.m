@@ -74,7 +74,6 @@
 
 //load Signals from vcd file
 - (void)loadSignals{
-    NSMutableString *str = [[NSMutableString alloc] init];
     self.values = [NSMutableArray new];
     NSString* filePath = [[NSBundle mainBundle] pathForResource:@"simple" ofType:@"vcd"];
     
@@ -88,7 +87,6 @@
         self.signals = [vcd signals];
         for (VCDSignal *sig in [[vcd signals] allValues]) {
             [self.values addObject:[sig name]];
-            [self constructScatterPlot:[sig name]];
         }
         // ...
         //refresh Data ofr Tableview
@@ -104,9 +102,6 @@
         for (VCDSignal *sig in [[vcd signals] allValues]) {
             [self constructScatterPlot:[sig name]];
         }
-        //        [self constructScatterPlot: @"z [5]"];
-        //        [self constructScatterPlot: @"z [6]"];
-        //        [self constructScatterPlot:@"z [7]"];
     }];
     
     
@@ -117,7 +112,7 @@
 #pragma mark Plot construction methods
 
 - (void)setupGraph{
-    int coordinate = self.values.count*-1;
+    NSInteger coordinate = self.values.count * -1;
     // Create graph from theme
     graph = [[CPTXYGraph alloc] initWithFrame:CGRectZero];
     CPTTheme *theme = [CPTTheme themeNamed:kCPTPlainWhiteTheme];
