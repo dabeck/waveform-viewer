@@ -87,7 +87,7 @@
         self.signals = [vcd signals];
 
         // ...
-        //refresh Data ofr Tableview
+        //refresh Data for Tableview
         [tblView reloadData];
         
         
@@ -113,7 +113,7 @@
     NSInteger coordinate = self.signals.count * -1;
     // Create graph from theme
     graph = [[CPTXYGraph alloc] initWithFrame:CGRectZero];
-    CPTTheme *theme = [CPTTheme themeNamed:kCPTPlainWhiteTheme];
+    CPTTheme *theme = [CPTTheme themeNamed:kCPTPlainBlackTheme];
     [graph applyTheme:theme];
     scatterPlotView.hostedGraph = graph;
     
@@ -128,10 +128,12 @@
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)graph.defaultPlotSpace;
     plotSpace.allowsUserInteraction = YES;
     
-    plotSpace.globalXRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(100)]; //TODO: calc max value
+    plotSpace.delegate = self;
+    
+    plotSpace.globalXRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(600)]; //TODO: calc max value
     plotSpace.globalYRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count) length:CPTDecimalFromDouble(coordinate)];
     
-    plotSpace.xRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
+    plotSpace.xRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(100)];
     plotSpace.yRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count) length:CPTDecimalFromDouble(coordinate)];
 	
     // Axes
@@ -175,6 +177,7 @@
     lineStyle.miterLimit = 1.0;
     lineStyle.lineWidth  = 1.0;
     lineStyle.lineColor  = [CPTColor redColor];
+    boundLinePlot.dataLineStyle = lineStyle;
 	
     boundLinePlot.dataSource     = self;
     boundLinePlot.cachePrecision = CPTPlotCachePrecisionDouble;
@@ -300,7 +303,7 @@
         heightttt = mainView.frame.size.height;
         [scatterPlotView setFrame: CGRectMake(120,0,scatterPlotView.frame.size.width, height)];
         [tblView setFrame:CGRectMake(0,0,120, height)];
-        [coordinateView setFrame:CGRectMake(0,screenWidth-CELL_SIZE_LANDSCAPE,screenWidth, height)];
+        [coordinateView setFrame:CGRectMake(0,screenWidth-CELL_SIZE_LANDSCAPE,screenHeight, height)];
     }
     else {
         NSInteger height = self.signals.count * 48;
@@ -318,7 +321,7 @@
 
         [scatterPlotView setFrame: CGRectMake(120,0,scatterPlotView.frame.size.width, height)];
         [tblView setFrame:CGRectMake(0,0,120, height)];
-        [coordinateView setFrame:CGRectMake(0,screenHeight-48,screenWidth, height)];
+        [coordinateView setFrame:CGRectMake(0,screenHeight-48,screenWidth, 48)];
     }
 }
 @end
