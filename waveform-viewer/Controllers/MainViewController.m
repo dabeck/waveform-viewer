@@ -128,10 +128,8 @@
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)graph.defaultPlotSpace;
     plotSpace.allowsUserInteraction = YES;
     
-    plotSpace.delegate = self;
-    
-    plotSpace.globalXRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(600)]; //TODO: calc max value
-    plotSpace.globalYRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.values.count) length:CPTDecimalFromDouble(coordinate)];
+    plotSpace.globalXRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(100)]; //TODO: calc max value
+    plotSpace.globalYRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count) length:CPTDecimalFromDouble(coordinate)];
     
     plotSpace.xRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
     plotSpace.yRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count) length:CPTDecimalFromDouble(coordinate)];
