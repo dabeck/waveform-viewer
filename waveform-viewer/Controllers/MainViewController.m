@@ -109,7 +109,7 @@
 #pragma mark -
 #pragma mark Plot construction methods
 
-- (void)setupGraph{
+- (void)setupGraph {
     NSInteger coordinate = self.signals.count * -1;
     // Create graph from theme
     graph = [[CPTXYGraph alloc] initWithFrame:CGRectZero];
@@ -133,30 +133,14 @@
     
     plotSpace.xRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
     plotSpace.yRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count) length:CPTDecimalFromDouble(coordinate)];
+
 	
-    // Axes
-    CPTXYAxisSet *axisSet = (CPTXYAxisSet *)graph.axisSet;
-    CPTXYAxis *x          = axisSet.xAxis;
-    x.majorIntervalLength         = CPTDecimalFromDouble(1.0);
-    x.orthogonalCoordinateDecimal = CPTDecimalFromDouble(0.0);
-    x.minorTicksPerInterval       = 2;
-    NSArray *exclusionRanges = [NSArray arrayWithObjects:
-                                [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.99) length:CPTDecimalFromDouble(0.02)],
-                                [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.99) length:CPTDecimalFromDouble(0.02)],
-                                [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(2.99) length:CPTDecimalFromDouble(0.02)],
-                                nil];
-    x.labelExclusionRanges = exclusionRanges;
-	
-    CPTXYAxis *y = axisSet.yAxis;
-    y.majorIntervalLength         = CPTDecimalFromDouble(1.0);
-    y.minorTicksPerInterval       = 2;
-    y.orthogonalCoordinateDecimal = CPTDecimalFromDouble(0.0);
-    exclusionRanges               = [NSArray arrayWithObjects:
-                                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.99) length:CPTDecimalFromDouble(0.02)],
-                                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.99) length:CPTDecimalFromDouble(0.02)],
-                                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(3.99) length:CPTDecimalFromDouble(0.02)],
-                                     nil];
-    y.labelExclusionRanges = exclusionRanges;
+	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)graph.axisSet;
+	CPTXYAxis *x          = axisSet.xAxis;
+	CPTXYAxis *y          = axisSet.yAxis;
+
+	[y removeFromSuperlayer];
+	[x removeFromSuperlayer];
 }
 
 
@@ -180,10 +164,6 @@
     boundLinePlot.cachePrecision = CPTPlotCachePrecisionDouble;
     boundLinePlot.interpolation  = CPTScatterPlotInterpolationStepped;
     [graph addPlot:boundLinePlot];
-	
-    // Add plot symbols
-    CPTMutableLineStyle *symbolLineStyle = [CPTMutableLineStyle lineStyle];
-    symbolLineStyle.lineColor = [CPTColor redColor];
 }
 
 #pragma mark -
