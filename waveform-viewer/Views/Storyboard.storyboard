@@ -1,28 +1,46 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="uJQ-8l-6HR">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="SOr-uM-4yc">
     <dependencies>
-        <deployment defaultVersion="1296" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+        <deployment defaultVersion="1792" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="cx1-jo-LKt">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="SOr-uM-4yc" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="598-i6-20a">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="uJQ-8l-6HR" kind="relationship" relationship="rootViewController" id="X9b-bI-GnE"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ReS-tF-EYP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2470" y="-2094"/>
+        </scene>
         <!--Main View Controller-->
         <scene sceneID="9Ei-QL-rOj">
             <objects>
                 <viewController id="uJQ-8l-6HR" customClass="MainViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="65n-RW-7se"/>
+                        <viewControllerLayoutGuide type="bottom" id="Vra-2h-edl"/>
+                    </layoutGuides>
                     <view key="view" autoresizesSubviews="NO" contentMode="scaleToFill" id="eHJ-UU-KUe">
-                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                        <rect key="frame" x="0.0" y="64" width="768" height="960"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view autoresizesSubviews="NO" contentMode="right" id="QeC-I8-GHT" customClass="CPTGraphHostingView">
-                                <rect key="frame" x="174" y="0.0" width="850" height="712"/>
+                            <view autoresizesSubviews="NO" contentMode="right" translatesAutoresizingMaskIntoConstraints="NO" id="QeC-I8-GHT" customClass="CPTGraphHostingView">
+                                <rect key="frame" x="175" y="0.0" width="593" height="960"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" none="YES" notEnabled="YES"/>
                                 </accessibility>
                             </view>
-                            <tableView autoresizesSubviews="NO" contentMode="center" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="48" sectionHeaderHeight="22" sectionFooterHeight="22" id="LpS-Rr-HIc">
-                                <rect key="frame" x="0.0" y="0.0" width="175" height="712"/>
+                            <tableView autoresizesSubviews="NO" contentMode="center" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="48" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="LpS-Rr-HIc">
+                                <rect key="frame" x="0.0" y="0.0" width="175" height="960"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -36,19 +54,21 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <view contentMode="scaleToFill" id="lHa-Ax-3v9">
-                                <rect key="frame" x="0.0" y="720" width="1024" height="48"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                <gestureRecognizers/>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                        <constraints>
+                            <constraint firstItem="QeC-I8-GHT" firstAttribute="top" secondItem="LpS-Rr-HIc" secondAttribute="top" id="5Mt-jV-iE7"/>
+                            <constraint firstItem="QeC-I8-GHT" firstAttribute="top" secondItem="eHJ-UU-KUe" secondAttribute="top" id="9yt-9N-hCD"/>
+                            <constraint firstItem="QeC-I8-GHT" firstAttribute="leading" secondItem="eHJ-UU-KUe" secondAttribute="leading" constant="175" id="A7i-3o-NqD"/>
+                            <constraint firstItem="QeC-I8-GHT" firstAttribute="leading" secondItem="LpS-Rr-HIc" secondAttribute="trailing" id="Dra-y6-JdC"/>
+                            <constraint firstItem="QeC-I8-GHT" firstAttribute="bottom" secondItem="LpS-Rr-HIc" secondAttribute="bottom" id="S93-KN-CPp"/>
+                            <constraint firstItem="LpS-Rr-HIc" firstAttribute="leading" secondItem="eHJ-UU-KUe" secondAttribute="leading" id="T4i-jN-ZXm"/>
+                            <constraint firstAttribute="bottom" secondItem="QeC-I8-GHT" secondAttribute="bottom" id="ZIt-Cz-zPw"/>
+                            <constraint firstAttribute="trailing" secondItem="QeC-I8-GHT" secondAttribute="trailing" id="h9m-me-sWG"/>
+                        </constraints>
                     </view>
-                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <navigationItem key="navigationItem" id="U34-Rv-s0M"/>
                     <connections>
-                        <outlet property="coordinateView" destination="lHa-Ax-3v9" id="uhd-eY-7Nr"/>
                         <outlet property="mainView" destination="eHJ-UU-KUe" id="D8C-XG-a7y"/>
                         <outlet property="scatterPlotView" destination="QeC-I8-GHT" id="hZ6-7m-GmX"/>
                         <outlet property="tblView" destination="LpS-Rr-HIc" id="mFS-9Z-LJy"/>
@@ -56,7 +76,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="24r-kq-3Op" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1459" y="-1155"/>
+            <point key="canvasLocation" x="-1235" y="-2075"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
