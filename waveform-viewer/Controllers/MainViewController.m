@@ -112,9 +112,15 @@
     self.graph.paddingRight  = 0.0;
     self.graph.paddingBottom = 0.0;
 	
-    
+//	CPTPlotAreaFrame *PAF = [CPTPlotAreaFrame new];
+//	[PAF setMasksToBorder:YES];
+//	[PAF setMasksToBounds:YES];
+//	
+//    [self.graph setPlotAreaFrame:PAF];
+	
     // Setup plot space
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)self.graph.defaultPlotSpace;
+	
     plotSpace.allowsUserInteraction = YES;
     
     plotSpace.delegate = self;
@@ -151,7 +157,7 @@
     boundLinePlot.dataSource     = self;
     boundLinePlot.cachePrecision = CPTPlotCachePrecisionDouble;
     boundLinePlot.interpolation  = CPTScatterPlotInterpolationStepped;
-    [self.graph addPlot:boundLinePlot];
+    [self.graph insertPlot:boundLinePlot atIndex:0 intoPlotSpace: (CPTXYPlotSpace *)self.graph.defaultPlotSpace];
 }
 
 #pragma mark -
