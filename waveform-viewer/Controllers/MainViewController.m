@@ -118,7 +118,7 @@
     scatterPlotView.hostedGraph = graph;
     
 	
-    graph.paddingLeft   = 10.0;
+    graph.paddingLeft   = 0.0;
     graph.paddingTop    = 0.0;
     graph.paddingRight  = 10.0;
     graph.paddingBottom = 0.0;
@@ -132,7 +132,7 @@
     
     plotSpace.globalXRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(600)]; //TODO: calc max value
     plotSpace.globalYRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count) length:CPTDecimalFromDouble(coordinate)];
-    
+
     plotSpace.xRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(100)];
     plotSpace.yRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count) length:CPTDecimalFromDouble(coordinate)];
 
