@@ -14,7 +14,7 @@
 
 @end
 
-@implementation MainViewController @synthesize dataForPlot;
+@implementation MainViewController
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -61,20 +61,20 @@
 {
     
     // Return the number of rows in the section.
-    return self.values.count;
+    return self.signals.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.textLabel.text = [self.values objectAtIndex:indexPath.row];
+	cell.textLabel.text = [[self.signals allValues][indexPath.row] name];
+	
     return cell;
 }
 
 //load Signals from vcd file
 - (void)loadSignals{
-    self.values = [NSMutableArray new];
     NSString* filePath = [[NSBundle mainBundle] pathForResource:@"simple" ofType:@"vcd"];
     
     [VCD loadWithPath:filePath callback:^(VCD *vcd) {
@@ -85,9 +85,7 @@
             return;
         }
         self.signals = [vcd signals];
-        for (VCDSignal *sig in [[vcd signals] allValues]) {
-            [self.values addObject:[sig name]];
-        }
+
         // ...
         //refresh Data ofr Tableview
         [tblView reloadData];
@@ -112,7 +110,7 @@
 #pragma mark Plot construction methods
 
 - (void)setupGraph{
-    NSInteger coordinate = self.values.count * -1;
+    NSInteger coordinate = self.signals.count * -1;
     // Create graph from theme
     graph = [[CPTXYGraph alloc] initWithFrame:CGRectZero];
     CPTTheme *theme = [CPTTheme themeNamed:kCPTPlainWhiteTheme];
@@ -131,10 +129,10 @@
     plotSpace.allowsUserInteraction = YES;
     
     plotSpace.globalXRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(100)]; //TODO: calc max value
-    plotSpace.globalYRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.values.count) length:CPTDecimalFromDouble(coordinate)];
+    plotSpace.globalYRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count) length:CPTDecimalFromDouble(coordinate)];
     
     plotSpace.xRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
-    plotSpace.yRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.values.count) length:CPTDecimalFromDouble(coordinate)];
+    plotSpace.yRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count) length:CPTDecimalFromDouble(coordinate)];
 	
     // Axes
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)graph.axisSet;
@@ -199,14 +197,6 @@
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
 {
-//    if ( fieldEnum == CPTScatterPlotFieldY ) {
-//        return [@[@0.8,@0.2,@0.2] objectAtIndex:index];
-//    }
-//    
-//    if ( fieldEnum == CPTScatterPlotFieldX ) {
-//        return [@[@0,@1,@2] objectAtIndex:index];
-//    }
-//    return nil;
     NSString *plotIdent = (NSString *) plot.identifier;
     if (![self.currentIdent isEqual:plotIdent]) {
         countPlot++;
@@ -289,7 +279,7 @@
     float screenHeight = self.view.frame.size.height;
     
     if ( UIInterfaceOrientationIsLandscape(orientation) ) {
-        NSInteger height = self.values.count * CELL_SIZE_LANDSCAPE;
+        NSInteger height = self.signals.count * CELL_SIZE_LANDSCAPE;
         // Move the plots into place for portrait
         //mainView.frame = self.view.bounds;
         //tblView.frame = self.view.bounds;
@@ -305,7 +295,7 @@
         [coordinateView setFrame:CGRectMake(0,screenWidth-CELL_SIZE_LANDSCAPE,screenWidth, height)];
     }
     else {
-        NSInteger height = self.values.count * 48;
+        NSInteger height = self.signals.count * 48;
         // Move the plots into place for landscape
         //mainView.frame = self.view.bounds;
         //scatterPlotView.frame = self.view.bounds;
