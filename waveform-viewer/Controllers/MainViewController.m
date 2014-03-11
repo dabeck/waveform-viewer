@@ -77,103 +77,120 @@
     NSMutableString *str = [[NSMutableString alloc] init];
     self.values = [NSMutableArray new];
     NSString* filePath = [[NSBundle mainBundle] pathForResource:@"simple" ofType:@"vcd"];
-
+    
     [VCD loadWithPath:filePath callback:^(VCD *vcd) {
+        
+        
         if(vcd == nil) {
             NSLog(@"VCD Parsing Error!");
             return;
         }
         self.signals = [vcd signals];
         for (VCDSignal *sig in [[vcd signals] allValues]) {
-            [str appendString:[sig name]];
-            [str appendString:@": "];
             [self.values addObject:[sig name]];
-            for(VCDValue *v = [sig valueAtTime:0]; v != nil; v = [v next]) {
-                [str appendString:[v value]];
-                [str appendString:@", "];
-            }
-            [str appendString:@"\n"];
-            
+            [self constructScatterPlot:[sig name]];
         }
         // ...
         //refresh Data ofr Tableview
         [tblView reloadData];
         
+        
+        
         //resize the views
+        [self setupGraph];
         [self setScreenOrientation];
-        [self constructScatterPlot];
+        
+        
+        for (VCDSignal *sig in [[vcd signals] allValues]) {
+            [self constructScatterPlot:[sig name]];
+        }
+        //        [self constructScatterPlot: @"z [5]"];
+        //        [self constructScatterPlot: @"z [6]"];
+        //        [self constructScatterPlot:@"z [7]"];
     }];
+    
+    
 }
 
 
 #pragma mark -
 #pragma mark Plot construction methods
 
-- (void)constructScatterPlot
-{
-    NSInteger coordinate = self.values.count * -1;
+- (void)setupGraph{
+    int coordinate = self.values.count*-1;
     // Create graph from theme
     graph = [[CPTXYGraph alloc] initWithFrame:CGRectZero];
     CPTTheme *theme = [CPTTheme themeNamed:kCPTPlainWhiteTheme];
     [graph applyTheme:theme];
     scatterPlotView.hostedGraph = graph;
+    
 	
     graph.paddingLeft   = 10.0;
     graph.paddingTop    = 0.0;
     graph.paddingRight  = 10.0;
     graph.paddingBottom = 0.0;
 	
+    
     // Setup plot space
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)graph.defaultPlotSpace;
-
     plotSpace.allowsUserInteraction = YES;
-	plotSpace.delegate = self;
-	
-	plotSpace.globalXRange			= [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(100)]; //TODO: get max value
-	plotSpace.globalYRange			= [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.values.count) length:CPTDecimalFromDouble(coordinate)]; //TODO: get max value
-
+    
+    plotSpace.globalXRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(100)];
+    plotSpace.globalYRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.values.count) length:CPTDecimalFromDouble(coordinate)];
+    
     plotSpace.xRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
     plotSpace.yRange                = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.values.count) length:CPTDecimalFromDouble(coordinate)];
-
+	
     // Axes
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)graph.axisSet;
     CPTXYAxis *x          = axisSet.xAxis;
     x.majorIntervalLength         = CPTDecimalFromDouble(1.0);
     x.orthogonalCoordinateDecimal = CPTDecimalFromDouble(0.0);
     x.minorTicksPerInterval       = 2;
-
+    NSArray *exclusionRanges = [NSArray arrayWithObjects:
+                                [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.99) length:CPTDecimalFromDouble(0.02)],
+                                [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.99) length:CPTDecimalFromDouble(0.02)],
+                                [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(2.99) length:CPTDecimalFromDouble(0.02)],
+                                nil];
+    x.labelExclusionRanges = exclusionRanges;
+	
     CPTXYAxis *y = axisSet.yAxis;
     y.majorIntervalLength         = CPTDecimalFromDouble(1.0);
     y.minorTicksPerInterval       = 2;
     y.orthogonalCoordinateDecimal = CPTDecimalFromDouble(0.0);
-	
+    exclusionRanges               = [NSArray arrayWithObjects:
+                                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.99) length:CPTDecimalFromDouble(0.02)],
+                                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.99) length:CPTDecimalFromDouble(0.02)],
+                                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(3.99) length:CPTDecimalFromDouble(0.02)],
+                                     nil];
+    y.labelExclusionRanges = exclusionRanges;
+}
+
+
+- (void)constructScatterPlot: (NSString*)identifier
+{
+    
     CPTScatterPlot *dataSourceLinePlot = [[CPTScatterPlot alloc] init];
 	
-    CPTMutableLineStyle *lineStyle = [dataSourceLinePlot.dataLineStyle mutableCopy];
-	
+    CPTMutableLineStyle *lineStyle = [dataSourceLinePlot.dataLineStyle mutableCopy];// Create graph from theme
+    
     // Create a blue plot area
     CPTScatterPlot *boundLinePlot = [[CPTScatterPlot alloc] init];
-    boundLinePlot.identifier = @"BluePlot";
+    boundLinePlot.identifier = identifier;
 	
     lineStyle            = [boundLinePlot.dataLineStyle mutableCopy];
     lineStyle.miterLimit = 1.0;
-    lineStyle.lineWidth  = 3.0;
-    lineStyle.lineColor  = [CPTColor blueColor];
+    lineStyle.lineWidth  = 1.0;
+    lineStyle.lineColor  = [CPTColor redColor];
 	
     boundLinePlot.dataSource     = self;
     boundLinePlot.cachePrecision = CPTPlotCachePrecisionDouble;
-    boundLinePlot.interpolation  = CPTScatterPlotInterpolationHistogram;
+    boundLinePlot.interpolation  = CPTScatterPlotInterpolationStepped;
     [graph addPlot:boundLinePlot];
 	
     // Add plot symbols
     CPTMutableLineStyle *symbolLineStyle = [CPTMutableLineStyle lineStyle];
-    symbolLineStyle.lineColor = [CPTColor blackColor];
-	
-    // Add some initial data
-    self.numbValues = [NSMutableArray new];
-    NSMutableArray *contentArray = [NSMutableArray arrayWithCapacity:100];
-
-    self.dataForPlot = contentArray;
+    symbolLineStyle.lineColor = [CPTColor redColor];
 }
 
 #pragma mark -
@@ -181,17 +198,47 @@
 
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
 {
-	return 3 ;
+    NSArray *allVal = [[self.signals objectForKey:plot.identifier] valueForKey:@"_values"];
+	return allVal.count ;
 }
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
 {
-    if ( fieldEnum == CPTScatterPlotFieldY ) {
-        return [@[@0.8,@0.2,@0.2] objectAtIndex:index];
+//    if ( fieldEnum == CPTScatterPlotFieldY ) {
+//        return [@[@0.8,@0.2,@0.2] objectAtIndex:index];
+//    }
+//    
+//    if ( fieldEnum == CPTScatterPlotFieldX ) {
+//        return [@[@0,@1,@2] objectAtIndex:index];
+//    }
+//    return nil;
+    NSString *plotIdent = (NSString *) plot.identifier;
+    if (![self.currentIdent isEqual:plotIdent]) {
+        countPlot++;
+        self.currentIdent = plotIdent;
     }
     
+    NSArray *allVal = [[self.signals objectForKey:plotIdent] valueForKey:@"_values"];
+    VCDValue * newValue = [allVal objectAtIndex:index];
+    if ( fieldEnum == CPTScatterPlotFieldY ) {
+        NSString *character = [NSString stringWithUTF8String:[newValue cValue]];
+        NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+        [f setNumberStyle:NSNumberFormatterDecimalStyle];
+        NSNumber *number = [f numberFromString:character];
+        
+        if([number isEqualToNumber:[NSNumber numberWithInt:1]]){
+            number = [NSNumber numberWithInt:(countPlot + 0.2)];
+            return  number;
+        }
+        else if([number isEqualToNumber:[NSNumber numberWithInt:0]]){
+            number = [NSNumber numberWithInt:(countPlot + 0.8)];
+            return  number;
+        }
+        
+        return number;
+    }
     if ( fieldEnum == CPTScatterPlotFieldX ) {
-        return [@[@0,@1,@2] objectAtIndex:index];
+        return [NSNumber numberWithInteger:[newValue time]];
     }
     return nil;
 }

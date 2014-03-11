@@ -25,15 +25,18 @@ const int CELL_SIZE_PORTRAIT = 48;
 	NSMutableArray *dataForPlot;
     IBOutlet UITableView *tblView;
     IBOutlet UIView *coordinateView;
-    CGPoint currentPoint;    
+    CGPoint currentPoint;
+    int countPlot;
 }
 
 @property (nonatomic, strong) NSMutableArray *dataForPlot;
 @property (nonatomic, strong) NSMutableArray *values;
 @property (nonatomic, strong) NSDictionary *signals;
 @property (nonatomic, strong) NSMutableArray *numbValues;
+@property (nonatomic, strong) NSString *currentIdent;
 
-- (void)constructScatterPlot;
+- (void)constructScatterPlot: (NSString*)identifier;
+- (void)setupGraph;
 - (void)loadSignals;
 
 @end
