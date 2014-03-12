@@ -74,8 +74,33 @@
     return 50.29f;
 }
 
-//load Signals from vcd file
-- (void)loadSignals{
+/**
+ *  Triggered when the user scrolled our tableView
+ *
+ *  @param scrollView          the actual scrollview (our tableview)
+ *  @param velocity            .
+ *  @param targetContentOffset .
+ */
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
+                     withVelocity:(CGPoint)velocity
+              targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+	UITableView *tv = (UITableView*)scrollView;
+	NSIndexPath *indexPathOfTopRowAfterScrolling = [tv indexPathForRowAtPoint:
+													*targetContentOffset
+													];
+	CGRect rectForTopRowAfterScrolling = [tv rectForRowAtIndexPath:
+										  indexPathOfTopRowAfterScrolling
+										  ];
+	targetContentOffset->y=rectForTopRowAfterScrolling.origin.y;
+}
+
+
+/**
+ *  Loads the signals from the selected VCD file
+ */
+- (void)loadSignals {
+	//TODO: get signal from settings!
     NSString* filePath = [[NSBundle mainBundle] pathForResource:self.parseSelection ofType:@"vcd"];
     
     [VCD loadWithPath:filePath callback:^(VCD *vcd) {
