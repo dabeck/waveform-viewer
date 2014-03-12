@@ -86,7 +86,9 @@
 		[self setupGraph];
 		
 		for (VCDSignal *sig in [[vcd signals] allValues]) {
-			[self constructScatterPlot:sig.name];
+			if ([sig.name isEqualToString:@"clock"] || [sig.name isEqualToString:@"z [8]"]) {
+				[self constructScatterPlot:sig.name];
+			}
 		}
     }];
     
@@ -98,8 +100,7 @@
 #pragma mark Plot construction methods
 
 - (void)setupGraph {
-    NSInteger coordinate = self.signals.count * -1;
-    // Create graph from theme
+	// Create graph from theme
     self.graph = [[CPTXYGraph alloc] initWithFrame:self.scatterPlotView.bounds];
 	self.graph.plotAreaFrame.masksToBorder = NO;
 	self.scatterPlotView.hostedGraph = self.graph;
@@ -112,11 +113,6 @@
     self.graph.paddingRight  = 0.0;
     self.graph.paddingBottom = 0.0;
 	
-//	CPTPlotAreaFrame *PAF = [CPTPlotAreaFrame new];
-//	[PAF setMasksToBorder:YES];
-//	[PAF setMasksToBounds:YES];
-//	
-//    [self.graph setPlotAreaFrame:PAF];
 	
     // Setup plot space
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)self.graph.defaultPlotSpace;
@@ -125,14 +121,24 @@
     
     plotSpace.delegate = self;
     
-    plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(600)]; //TODO: calc max value
-    plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count) length:CPTDecimalFromDouble(coordinate/2)];
+    plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(800)];
+    plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(15)];
 
-    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(100)];
-    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count) length:CPTDecimalFromDouble(coordinate/2)];
+    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
+    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(15)];
 
-	
-	self.graph.axisSet = nil;
+//	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)self.graph.axisSet;
+//    CPTXYAxis *x          = axisSet.xAxis;
+//    x.majorIntervalLength         = CPTDecimalFromDouble(1);
+//    x.minorTicksPerInterval       = 0;
+
+	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)self.graph.axisSet;
+	CPTXYAxis *x = axisSet.xAxis;
+	CPTXYAxis *y = axisSet.yAxis;
+	x.labelingPolicy = CPTAxisLabelingPolicyNone;
+	y.labelingPolicy = CPTAxisLabelingPolicyNone;
+
+//	self.graph.axisSet = nil;
 	
 }
 
@@ -157,7 +163,7 @@
     boundLinePlot.dataSource     = self;
     boundLinePlot.cachePrecision = CPTPlotCachePrecisionDouble;
     boundLinePlot.interpolation  = CPTScatterPlotInterpolationStepped;
-    [self.graph insertPlot:boundLinePlot atIndex:0 intoPlotSpace: (CPTXYPlotSpace *)self.graph.defaultPlotSpace];
+    [self.graph addPlot:boundLinePlot];
 }
 
 #pragma mark -
@@ -165,25 +171,56 @@
 
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
 {
+	// For each line the number of different values e.g. 0,1 = 2 ...
     NSArray *allVal = [[self.signals objectForKey:plot.identifier] valueForKey:@"_values"];
-	return allVal.count ;
+//	NSLog(@"%@", plot.identifier);
+	return allVal.count;
+//	return 2;
 }
+
+//- (NSArray *)numbersForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndexRange:(NSRange)indexRange {
+//	return @[@5, @5];
+//}
+
+//- (NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)idx {
+//	NSNumber *num;
+//	
+//    NSArray *allVal = [[self.signals objectForKey:plot.identifier] valueForKey:@"_values"];
+//    VCDValue * currentValue = [allVal objectAtIndex:idx];
+//	
+//	if ( fieldEnum == CPTScatterPlotFieldY ) {
+//		if ([(NSString *)plot.identifier isEqualToString:@"z [8]"]) {
+//			num = [NSNumber numberWithInteger:[[NSString stringWithUTF8String:currentValue.cValue] integerValue]+2];
+//		} else {
+//			num = [NSNumber numberWithInteger:[[NSString stringWithUTF8String:currentValue.cValue] integerValue]];
+//		}
+//	}
+//	
+//	if ( fieldEnum == CPTScatterPlotFieldX ) {
+//		num = [NSDecimalNumber numberWithInteger:[currentValue time]/10];
+//	}
+//
+//	
+//	return num;
+//}
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
 {
-    NSString *plotIdent = (NSString *) plot.identifier;
-    if (![self.currentIdent isEqual:plotIdent]) {
+	NSString *plotIdent = (NSString *) plot.identifier;
+
+    if (![plotIdent isEqualToString:self.currentIdent]) {
         self.countPlot++;
         self.currentIdent = plotIdent;
     }
-    
-    NSArray *allVal = [[self.signals objectForKey:plotIdent] valueForKey:@"_values"];
+	
+//	VCDSignal *newSig = [self.signals objectForKey:plotIdent];
+//  VCDValue * newValue = [newSig valueAtTime:index];
+	NSArray *allVal = [[self.signals objectForKey:plotIdent] valueForKey:@"_values"];
     VCDValue * newValue = [allVal objectAtIndex:index];
+
+	NSNumber *number = [NSNumber numberWithInteger:[newValue.value integerValue]];
+
     if ( fieldEnum == CPTScatterPlotFieldY ) {
-        NSString *character = [NSString stringWithUTF8String:[newValue cValue]];
-        NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
-        [f setNumberStyle:NSNumberFormatterDecimalStyle];
-        NSNumber *number = [f numberFromString:character];
         
         if([number isEqualToNumber:[NSNumber numberWithInt:1]]){
             number = [NSNumber numberWithFloat:(self.countPlot + 0.2)];
@@ -193,19 +230,19 @@
             number = [NSNumber numberWithFloat:(self.countPlot + 0.8)];
             return  number;
         }
-        else if([character isEqualToString:@"x"]){
-            number = [NSNumber numberWithFloat:(self.countPlot + 0.5)];
+        else if([newValue.value isEqualToString:@"x"]){
+            number = [NSNumber numberWithFloat:(self.countPlot + 0.4)];
             return  number;
         }
-        else if([character isEqualToString:@"z"]){
-            number = [NSNumber numberWithFloat:(self.countPlot + 0.5)];
+        else if([newValue.value isEqualToString:@"z"]){
+            number = [NSNumber numberWithFloat:(self.countPlot + 0.4)];
             return  number;
         }
         
         return number;
     }
     if ( fieldEnum == CPTScatterPlotFieldX ) {
-        return [NSDecimalNumber numberWithInteger:[newValue time]];
+        return [NSNumber numberWithInteger:[newValue time]];
     }
     return nil;
 }
