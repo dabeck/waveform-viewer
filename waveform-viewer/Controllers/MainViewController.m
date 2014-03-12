@@ -12,6 +12,9 @@
 	CGPoint actualPosition;
     NSMutableDictionary *visibleSignals;
     NSInteger maxTime;
+    CPTPlotRange *xRange;
+    CPTPlotRange *yRange;
+    NSInteger visibleSignalsCount;
 }
 
 @end
@@ -30,7 +33,7 @@
 	actualPosition = CGPointMake(0, 0);
 	self.countPlot =-1;
 	//resize the views
-	
+
     [self loadSignals];
 
 }
@@ -100,6 +103,7 @@
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     [self.graph removeFromSuperlayer];
     self.countPlot = -1;
+    //self.graph
     [self setupGraph];
     [self constructScatterPlot];
 }
@@ -123,14 +127,6 @@
         //refresh Data for Tableview
         [self.tblView reloadData];
         
-//		for(VCDSignal *newSig in [self.signals allKeys]){
-//            for(VCDValue *newValue in [newSig valueForKey:@"_values"]){
-//                if(maxTime < [newValue time]){
-//                    maxTime = [newValue time];
-//                }
-//            }
-//        }
-        
         for(VCDSignal *newSig in [self.signals allValues]){
             for(VCDValue *newValue in [newSig valueForKey:@"_values"]){
                 if(maxTime < [newValue time]){
@@ -139,10 +135,13 @@
             }
         }
         
+        visibleSignalsCount = (self.tblView.visibleCells.count);
+        xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
+        yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
+        
         //configure Graph
         [self setupGraph];
         [self constructScatterPlot];
-        
         
     }];
     
@@ -181,10 +180,10 @@
     plotSpace.delegate = self;
     
     plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
-    plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(coordinate)];
+    plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
     
-    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
-    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(coordinate)];
+    plotSpace.xRange = xRange;
+    plotSpace.yRange = yRange;
 
     NSInteger xInterval = 10;
     if(maxTime >= 100000){
@@ -341,9 +340,11 @@
 				CPTMutablePlotRange *mutableRange = [newRange mutableCopy];
 				mutableRange.location = CPTDecimalFromFloat(0.0);
 				updatedRange = mutableRange;
+                xRange = updatedRange;
 			}
 			else {
 				updatedRange = newRange;
+                xRange = updatedRange;
 			}
 			break;
 		case CPTCoordinateY:
