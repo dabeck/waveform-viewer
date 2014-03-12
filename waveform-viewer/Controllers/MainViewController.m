@@ -157,16 +157,37 @@
                 maxTime = [newValue time];
             }
         }
-        if (self.tblView.visibleCells.count > MAX_VISIBLE_CELLS)
-		{
-            visibleSignalsCount = (self.tblView.visibleCells.count);
-        }
-        else
-		{
-            visibleSignalsCount = MAX_VISIBLE_CELLS;
-        }
     }
+	
+	// Another loop to draw the lines till the end
+	for (VCDSignal *newSig in [self.signals allValues])
+	{
+		NSInteger maxSigTime = 0;
+		char lastValue = '\0';
+		
+		for (VCDValue *newValue in [newSig valueForKey:@"_values"])
+		{
+            if (maxTime > [newValue time])
+			{
+                maxSigTime = [newValue time];
+				lastValue = *[newValue cValue];
+            }
+        }
+		
+		if (maxSigTime < maxTime) {
+			[newSig addValue:&lastValue AtTime:maxTime];
+		}
+	}
     
+	if (self.tblView.visibleCells.count > MAX_VISIBLE_CELLS)
+	{
+		visibleSignalsCount = self.tblView.visibleCells.count;
+	}
+	else
+	{
+		visibleSignalsCount = MAX_VISIBLE_CELLS;
+	}
+	
 	xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
 	yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
 	
@@ -226,9 +247,9 @@
 	CPTXYAxis *y = axisSet.yAxis;
 	y.labelingPolicy = CPTAxisLabelingPolicyNone;
 	
-    if (self.tblView.visibleCells.count < MAX_VISIBLE_CELLS)
+    if (visibleSignalsCount < MAX_VISIBLE_CELLS)
 	{
-        [self.tblView setContentInset:UIEdgeInsetsMake((MAX_VISIBLE_CELLS - self.tblView.visibleCells.count) * CELL_HEIGHT, 0, 0, 0)];
+        [self.tblView setContentInset:UIEdgeInsetsMake((MAX_VISIBLE_CELLS - visibleSignalsCount) * CELL_HEIGHT, 0, 0, 0)];
     }
     else
 	{
