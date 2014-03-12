@@ -91,8 +91,18 @@
 										  indexPathOfTopRowAfterScrolling
 										  ];
 	targetContentOffset->y=rectForTopRowAfterScrolling.origin.y;
+    
+    //self.graph = nil;
+    //[self.graph removeFromSuperlayer];
+    //[self constructScatterPlot];
 }
 
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    [self.graph removeFromSuperlayer];
+    self.countPlot = -1;
+    [self setupGraph];
+    [self constructScatterPlot];
+}
 
 /**
  *  Loads the signals from the selected VCD file
