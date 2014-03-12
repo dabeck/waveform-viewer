@@ -102,6 +102,14 @@
     //[self constructScatterPlot];
 }
 
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    [self.graph removeFromSuperlayer];
+    self.countPlot = -1;
+    //self.graph
+    [self setupGraph];
+    [self constructScatterPlot];
+}
+
 /**
  *  Loads the signals from the selected VCD file
  */
@@ -142,6 +150,10 @@
             }
         }
     }
+    
+    visibleSignalsCount = (self.tblView.visibleCells.count);
+    xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
+    yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
     
     //configure Graph
     [self setupGraph];
