@@ -8,8 +8,29 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingsViewController : UIViewController
+
+@protocol SettingsViewControllerDelegate <NSObject>
+
+- (void)didChooseValue:(NSString *)value;
+
+@end
+
+@interface SettingsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+
+@property (strong, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
+@property (strong, nonatomic) IBOutlet UITextField *urlField;
+@property (strong, nonatomic) IBOutlet UITableView *fileTable;
+
+@property (strong, nonatomic) IBOutlet NSArray *files;
+@property (strong, nonatomic) IBOutlet NSIndexPath *lastIndexPath;
+
+@property (strong, nonatomic) IBOutlet NSString *selection;
+@property (strong, nonatomic) IBOutlet NSString *selectionType;
+
+@property (nonatomic, assign) id<SettingsViewControllerDelegate> delegate;
+
 
 - (IBAction)btnDoneTapped:(id)sender;
+- (IBAction)changedValue:(id)sender;
 
 @end

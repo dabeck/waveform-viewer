@@ -31,7 +31,56 @@
                     <view key="view" contentMode="scaleToFill" id="rqZ-pW-nNM">
                         <rect key="frame" x="0.0" y="64" width="768" height="960"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="lla-Qo-fT3">
+                                <rect key="frame" x="323" y="75" width="123" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="First"/>
+                                    <segment title="Second"/>
+                                </segments>
+                                <connections>
+                                    <action selector="changedValue:" destination="MGe-ID-Ega" eventType="valueChanged" id="Y2e-kt-Gk3"/>
+                                </connections>
+                            </segmentedControl>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="T4J-pd-6b9">
+                                <rect key="frame" x="224" y="168" width="320" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="URL"/>
+                            </textField>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="I3v-bJ-519">
+                                <rect key="frame" x="224" y="170" width="320" height="320"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="320" id="8Zu-8K-6NE"/>
+                                    <constraint firstAttribute="width" constant="320" id="8af-po-nkC"/>
+                                    <constraint firstAttribute="height" constant="320" id="JVZ-3E-zgv"/>
+                                </constraints>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="FileCell" id="JdJ-6f-oAt">
+                                        <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JdJ-6f-oAt" id="nMs-pd-YEa">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="I3v-bJ-519" secondAttribute="centerX" id="6Bl-my-L7b"/>
+                            <constraint firstItem="cBM-DY-gEE" firstAttribute="top" relation="lessThanOrEqual" secondItem="I3v-bJ-519" secondAttribute="bottom" constant="472" id="7rq-RF-paD"/>
+                            <constraint firstAttribute="centerX" secondItem="lla-Qo-fT3" secondAttribute="centerX" id="FIS-wT-HsA"/>
+                            <constraint firstItem="I3v-bJ-519" firstAttribute="leading" secondItem="T4J-pd-6b9" secondAttribute="leading" id="HfL-Uq-qL1"/>
+                            <constraint firstItem="I3v-bJ-519" firstAttribute="top" secondItem="lla-Qo-fT3" secondAttribute="bottom" constant="67" id="IcC-0q-faM"/>
+                            <constraint firstItem="I3v-bJ-519" firstAttribute="top" secondItem="T4J-pd-6b9" secondAttribute="top" id="cVJ-Sm-iDh"/>
+                            <constraint firstItem="I3v-bJ-519" firstAttribute="trailing" secondItem="T4J-pd-6b9" secondAttribute="trailing" id="lXR-hd-aIs"/>
+                            <constraint firstItem="lla-Qo-fT3" firstAttribute="top" secondItem="FIk-PA-bfS" secondAttribute="bottom" constant="75" id="z9n-O6-tYl"/>
+                        </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" id="yE3-ac-KUq">
@@ -41,6 +90,11 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="fileTable" destination="I3v-bJ-519" id="Tos-eA-Wik"/>
+                        <outlet property="segmentedControl" destination="lla-Qo-fT3" id="k1N-Dn-Hcn"/>
+                        <outlet property="urlField" destination="T4J-pd-6b9" id="cNF-nr-Kye"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nvd-AS-1zc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -50,6 +104,7 @@
         <scene sceneID="Ct1-HS-rUU">
             <objects>
                 <navigationController definesPresentationContext="YES" id="bCf-pG-6pU" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="Va6-a8-qRB"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="ssA-0g-e4N">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -111,7 +166,7 @@
                     <navigationItem key="navigationItem" id="U34-Rv-s0M">
                         <barButtonItem key="rightBarButtonItem" systemItem="edit" id="S08-fs-Z1L">
                             <connections>
-                                <segue destination="bCf-pG-6pU" kind="modal" id="dFE-5g-knS"/>
+                                <segue destination="bCf-pG-6pU" kind="modal" identifier="modalIdent" id="dFE-5g-knS"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
