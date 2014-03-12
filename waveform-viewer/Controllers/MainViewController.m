@@ -23,7 +23,7 @@
 
 #pragma mark - Initialization and teardown
 
--(void)viewDidLoad
+- (void)viewDidLoad
 {
     [super viewDidLoad];
     [self.tblView setDelegate:self];
@@ -38,14 +38,14 @@
     }
 }
 
--(void)viewDidAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
 	
 	//scatterPlotView.frame = self.view.bounds;
 }
 
--(void)didReceiveMemoryWarning
+- (void)didReceiveMemoryWarning
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -72,33 +72,23 @@
     return cell;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return CELL_HEIGHT;
 }
 
 #pragma mark - ScrollView delegate
-
-/**
- *  Triggered when the user scrolled our tableView
- *
- *  @param scrollView          the actual scrollview (our tableview)
- *  @param velocity            .
- *  @param targetContentOffset .
- */
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
-                     withVelocity:(CGPoint)velocity
-              targetContentOffset:(inout CGPoint *)targetContentOffset
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-	UITableView *tv = (UITableView*)scrollView;
-	NSIndexPath *indexPathOfTopRowAfterScrolling = [tv indexPathForRowAtPoint:*targetContentOffset];
-	CGRect rectForTopRowAfterScrolling = [tv rectForRowAtIndexPath:indexPathOfTopRowAfterScrolling];
-	targetContentOffset->y=rectForTopRowAfterScrolling.origin.y;
+	[self.graph removeFromSuperlayer];
+	
+    [self setupGraph];
+    [self constructScatterPlot];
 }
 
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    [self.graph removeFromSuperlayer];
+	[self.graph removeFromSuperlayer];
 	
     [self setupGraph];
     [self constructScatterPlot];
@@ -302,7 +292,7 @@
 
 #pragma mark - CorePlot dataSource
 
--(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
+- (NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
 {
 	// For each line the number of different values e.g. 0,1 = 2 ...
     NSArray *allVal = [[visibleSignals objectForKey:(NSString*)plot.identifier] valueForKey:@"_values"];
@@ -310,7 +300,7 @@
 }
 
 
--(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
+- (NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
 {
 	NSString *plotIdent = (NSString *) plot.identifier;
 	
@@ -366,7 +356,7 @@
 
 #pragma mark - CorePlot delegates
 
--(CPTLayer *)dataLabelForPlot:(CPTPlot *)plot recordIndex:(NSUInteger)index
+- (CPTLayer *)dataLabelForPlot:(CPTPlot *)plot recordIndex:(NSUInteger)index
 {
     static CPTMutableTextStyle *text = nil;
 	
@@ -416,8 +406,16 @@
     return updatedRange;
 }
 
+#pragma mark - DeviceRotation delegate
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+	[self.graph removeFromSuperlayer];
+	[self setup];
+}
+
 #pragma mark - Navigation
-- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"modalIdent"])
 	{
