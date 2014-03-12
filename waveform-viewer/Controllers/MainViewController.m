@@ -161,18 +161,9 @@
         [self setupGraph];
         [self constructScatterPlot];
         
-    }];
+    }
     
-    
-    
-    
-    visibleSignalsCount = (self.tblView.visibleCells.count);
-    xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
-    yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
-    
-    //configure Graph
-    [self setupGraph];
-    [self constructScatterPlot];
+
 }
 
 #pragma mark -
@@ -194,7 +185,6 @@
 	
     // Setup plot space
 
-    NSInteger coordinate = (self.tblView.visibleCells.count);
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)self.graph.defaultPlotSpace;
 	
     plotSpace.allowsUserInteraction = YES;
