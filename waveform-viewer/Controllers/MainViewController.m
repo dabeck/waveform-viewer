@@ -24,13 +24,15 @@
     [super viewDidLoad];
     [self.tblView setDelegate:self];
     [self.tblView setDataSource:self];
-
-	actualPosition = CGPointMake(0, 0);
+    actualPosition = CGPointMake(0, 0);
 	self.countPlot =-1;
-	//resize the views
-	
-    [self loadSignals];
+    
 
+    if (!self.parseSelection) {
+        [self performSegueWithIdentifier:@"modalIdent" sender:self];
+    } else {
+        [self loadSignals];
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -72,7 +74,7 @@
 
 //load Signals from vcd file
 - (void)loadSignals{
-    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"normal" ofType:@"vcd"];
+    NSString* filePath = [[NSBundle mainBundle] pathForResource:self.parseSelection ofType:@"vcd"];
     
     [VCD loadWithPath:filePath callback:^(VCD *vcd) {
         
@@ -311,5 +313,22 @@
     }
 	
     return updatedRange;
+}
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"modalIdent"]) {
+        UINavigationController *controller = [segue destinationViewController];
+        
+        SettingsViewController *svc = [[controller childViewControllers] firstObject];
+        svc.delegate = self;
+    }
+}
+
+- (void)didChooseValue:(NSString *)value {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    self.parseSelection = value;
+    self.parseSelection = [self.parseSelection stringByReplacingOccurrencesOfString:@".vcd" withString:@""];
+    [self.navigationController popViewControllerAnimated:YES];
+    [self loadSignals];
 }
 @end

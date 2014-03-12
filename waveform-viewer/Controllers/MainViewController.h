@@ -12,11 +12,12 @@
 #import "VCDParser.h"
 #import "VCDSignal.h"
 #import "VCDValue.h"
+#import "SettingsViewController.h"
 
 const int CELL_SIZE_LANDSCAPE = 50;
 const int CELL_SIZE_PORTRAIT = 50;
 
-@interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTPlotSpaceDelegate, CPTPlotDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTPlotSpaceDelegate, CPTPlotDelegate, UITableViewDelegate, UITableViewDataSource, SettingsViewControllerDelegate>
 
 @property (nonatomic, weak) IBOutlet UIView *mainView;
 @property (nonatomic, weak) IBOutlet CPTGraphHostingView *scatterPlotView;
@@ -27,5 +28,6 @@ const int CELL_SIZE_PORTRAIT = 50;
 
 @property (nonatomic, strong) NSDictionary *signals;
 @property (nonatomic, strong) NSString *currentIdent;
+@property (nonatomic, strong) NSString *parseSelection;
 
 @end
