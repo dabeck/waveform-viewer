@@ -10,6 +10,7 @@
 
 @interface MainViewController () {
 	CGPoint actualPosition;
+    NSMutableDictionary *visibleSignals;
 }
 
 @end
@@ -156,23 +157,27 @@
     CPTScatterPlot *dataSourceLinePlot = [[CPTScatterPlot alloc] init];
 	
     CPTMutableLineStyle *lineStyle = [dataSourceLinePlot.dataLineStyle mutableCopy];// Create graph from theme
-    
+    visibleSignals = [NSMutableDictionary new];
     // Create a blue plot area
-    for (VCDSignal *sig in [self.signals allValues] ) {
-        if([sig.name isEqualToString:@"z [5]"]||[sig.name isEqualToString:@"z [1]"]||[sig.name isEqualToString:@"z [2]"]||[sig.name isEqualToString:@"z [3]"]||[sig.name isEqualToString:@"z [4]"]||[sig.name isEqualToString:@"z [5]"]||[sig.name isEqualToString:@"z [6]"]||[sig.name isEqualToString:@"z [7]"]||[sig.name isEqualToString:@"z [8]"]||[sig.name isEqualToString:@"z [9]"]||[sig.name isEqualToString:@"z [10]"]||[sig.name isEqualToString:@"z [11]"]||[sig.name isEqualToString:@"z [12]"]||[sig.name isEqualToString:@"z [13]"]||[sig.name isEqualToString:@"z [14]"]){
-            CPTScatterPlot *boundLinePlot = [[CPTScatterPlot alloc] init];
-            boundLinePlot.identifier = [sig name];
-            
-            lineStyle            = [boundLinePlot.dataLineStyle mutableCopy];
-            lineStyle.miterLimit = 1.0;
-            lineStyle.lineWidth  = 1.0;
-            lineStyle.lineColor  = [CPTColor redColor];
-            boundLinePlot.dataLineStyle = lineStyle;
-            
-            boundLinePlot.dataSource     = self;
-            boundLinePlot.cachePrecision = CPTPlotCachePrecisionDouble;
-            boundLinePlot.interpolation  = CPTScatterPlotInterpolationStepped;
-            [self.graph addPlot:boundLinePlot];
+    for(NSString* name in[self.signals allKeys]){
+        for(UITableViewCell *cell in (self.tblView.visibleCells)){
+            if([cell.textLabel.text isEqualToString:name]){
+                [visibleSignals addEntriesFromDictionary:@{name:self.signals[name] }];
+                CPTScatterPlot *boundLinePlot = [[CPTScatterPlot alloc] init];
+                boundLinePlot.identifier = name;
+                
+                lineStyle            = [boundLinePlot.dataLineStyle mutableCopy];
+                lineStyle.miterLimit = 1.0;
+                lineStyle.lineWidth  = 1.0;
+                lineStyle.lineColor  = [CPTColor redColor];
+                boundLinePlot.dataLineStyle = lineStyle;
+                
+                boundLinePlot.dataSource     = self;
+                boundLinePlot.cachePrecision = CPTPlotCachePrecisionDouble;
+                boundLinePlot.interpolation  = CPTScatterPlotInterpolationStepped;
+                [self.graph addPlot:boundLinePlot];
+            }
+            continue;
         }
     }
 }
@@ -183,37 +188,11 @@
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
 {
 	// For each line the number of different values e.g. 0,1 = 2 ...
-    NSArray *allVal = [[self.signals objectForKey:plot.identifier] valueForKey:@"_values"];
-//	NSLog(@"%@", plot.identifier);
+    NSString *ident = (NSString*)plot.identifier;
+    NSArray *allVal = [[visibleSignals objectForKey:(NSString*)plot.identifier] valueForKey:@"_values"];
 	return allVal.count;
 //	return 2;
 }
-
-//- (NSArray *)numbersForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndexRange:(NSRange)indexRange {
-//	return @[@5, @5];
-//}
-
-//- (NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)idx {
-//	NSNumber *num;
-//	
-//    NSArray *allVal = [[self.signals objectForKey:plot.identifier] valueForKey:@"_values"];
-//    VCDValue * currentValue = [allVal objectAtIndex:idx];
-//	
-//	if ( fieldEnum == CPTScatterPlotFieldY ) {
-//		if ([(NSString *)plot.identifier isEqualToString:@"z [8]"]) {
-//			num = [NSNumber numberWithInteger:[[NSString stringWithUTF8String:currentValue.cValue] integerValue]+2];
-//		} else {
-//			num = [NSNumber numberWithInteger:[[NSString stringWithUTF8String:currentValue.cValue] integerValue]];
-//		}
-//	}
-//	
-//	if ( fieldEnum == CPTScatterPlotFieldX ) {
-//		num = [NSDecimalNumber numberWithInteger:[currentValue time]/10];
-//	}
-//
-//	
-//	return num;
-//}
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
 {
@@ -224,41 +203,46 @@
         self.currentIdent = plotIdent;
     }
 	
-    if(self.countPlot >= 15){
-        return nil;
-    }
+//    if(self.countPlot >= 15){
+//        return nil;
+//    }
     
-//	VCDSignal *newSig = [self.signals objectForKey:plotIdent];
+    VCDSignal *newSig = [visibleSignals objectForKey:plotIdent];
 //  VCDValue * newValue = [newSig valueAtTime:index];
-	NSArray *allVal = [[self.signals objectForKey:plotIdent] valueForKey:@"_values"];
+	NSArray *allVal = [newSig valueForKey:@"_values"];
+
+	NSNumber *number = [NSNumber new];
+    //for(VCDValue* newValue in [allVal ){
     VCDValue * newValue = [allVal objectAtIndex:index];
+        NSInteger newVa = [newValue.value integerValue];
+        number = [NSNumber numberWithInteger:[newValue.value integerValue]];
+    
 
-	NSNumber *number = [NSNumber numberWithInteger:[newValue.value integerValue]];
-
-    if ( fieldEnum == CPTScatterPlotFieldY ) {
-        
-        if([number isEqualToNumber:[NSNumber numberWithInt:1]]){
-            number = [NSNumber numberWithFloat:(self.countPlot + 0.2)];
-            return  number;
+        if ( fieldEnum == CPTScatterPlotFieldY ) {
+            
+            if([number isEqualToNumber:[NSNumber numberWithInt:1]]){
+                number = [NSNumber numberWithFloat:(self.countPlot + 0.2)];
+                return  number;
+            }
+            else if([number isEqualToNumber:[NSNumber numberWithInt:0]]){
+                number = [NSNumber numberWithFloat:(self.countPlot + 0.8)];
+                return  number;
+            }
+            else if([newValue.value isEqualToString:@"x"]){
+                number = [NSNumber numberWithFloat:(self.countPlot + 0.4)];
+                return  number;
+            }
+            else if([newValue.value isEqualToString:@"z"]){
+                number = [NSNumber numberWithFloat:(self.countPlot + 0.4)];
+                return  number;
+            }
+            
+            return number;
         }
-        else if([number isEqualToNumber:[NSNumber numberWithInt:0]]){
-            number = [NSNumber numberWithFloat:(self.countPlot + 0.8)];
-            return  number;
+        if ( fieldEnum == CPTScatterPlotFieldX ) {
+            return [NSNumber numberWithInteger:[newValue time]];
         }
-        else if([newValue.value isEqualToString:@"x"]){
-            number = [NSNumber numberWithFloat:(self.countPlot + 0.4)];
-            return  number;
-        }
-        else if([newValue.value isEqualToString:@"z"]){
-            number = [NSNumber numberWithFloat:(self.countPlot + 0.4)];
-            return  number;
-        }
-        
-        return number;
-    }
-    if ( fieldEnum == CPTScatterPlotFieldX ) {
-        return [NSNumber numberWithInteger:[newValue time]];
-    }
+    //}
     return nil;
 }
 
