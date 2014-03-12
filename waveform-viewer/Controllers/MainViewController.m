@@ -214,6 +214,7 @@
 	return allVal.count;
 }
 
+
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
 {
 	NSString *plotIdent = (NSString *) plot.identifier;
