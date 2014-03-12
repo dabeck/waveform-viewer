@@ -95,56 +95,51 @@
 	targetContentOffset->y=rectForTopRowAfterScrolling.origin.y;
 }
 
-
 /**
  *  Loads the signals from the selected VCD file
  */
 - (void)loadSignals {
 	//TODO: get signal from settings!
-    NSString* filePath = [[NSBundle mainBundle] pathForResource:self.parseSelection ofType:@"vcd"];
+    if ([self.parseSelection  rangeOfString:@"http://"].location == NSNotFound) {
+        self.parseSelection = [self.parseSelection stringByReplacingOccurrencesOfString:@".vcd" withString:@""];
+        NSString* filePath = [[NSBundle mainBundle] pathForResource:self.parseSelection ofType:@"vcd"];
     
-    [VCD loadWithPath:filePath callback:^(VCD *vcd) {
-        
-        if(vcd == nil) {
-            NSLog(@"VCD Parsing Error!");
-            return;
-        }
-        self.signals = [vcd signals];
-
-        // ...
-        //refresh Data for Tableview
-        [self.tblView reloadData];
-        
-//		for(VCDSignal *newSig in [self.signals allKeys]){
-//            for(VCDValue *newValue in [newSig valueForKey:@"_values"]){
-//                if(maxTime < [newValue time]){
-//                    maxTime = [newValue time];
-//                }
-//            }
-//        }
-        
-        for(VCDSignal *newSig in [self.signals allValues]){
-            for(VCDValue *newValue in [newSig valueForKey:@"_values"]){
-                if(maxTime < [newValue time]){
-                    maxTime = [newValue time];
-                }
+        [VCD loadWithPath:filePath callback:^(VCD *vcd) {
+            if(vcd == nil) {
+                NSLog(@"VCD Parsing Error!");
+                return;
             }
-        }
-        
-        //configure Graph
-        [self setupGraph];
-        [self constructScatterPlot];
-        
-        
-    }];
-    
-    
-    
-    
-    //add plots
-    
+            self.signals = [vcd signals];
+            [self setup];
+        }];
+    } else {
+        [VCD loadWithURL:[NSURL URLWithString:self.parseSelection] callback:^(VCD *vcd) {
+            if(vcd == nil) {
+                NSLog(@"VCD Parsing Error!");
+                return;
+            }
+            self.signals = [vcd signals];
+            [self setup];
+        }];
+    }
 }
 
+- (void) setup {
+    //refresh Data for Tableview
+    [self.tblView reloadData];
+    
+    for(VCDSignal *newSig in [self.signals allValues]){
+        for(VCDValue *newValue in [newSig valueForKey:@"_values"]){
+            if(maxTime < [newValue time]){
+                maxTime = [newValue time];
+            }
+        }
+    }
+    
+    //configure Graph
+    [self setupGraph];
+    [self constructScatterPlot];
+}
 
 #pragma mark -
 #pragma mark Plot construction methods
@@ -360,7 +355,6 @@
 - (void)didChooseValue:(NSString *)value {
     [self dismissViewControllerAnimated:YES completion:nil];
     self.parseSelection = value;
-    self.parseSelection = [self.parseSelection stringByReplacingOccurrencesOfString:@".vcd" withString:@""];
     [self.navigationController popViewControllerAnimated:YES];
     [self loadSignals];
 }
