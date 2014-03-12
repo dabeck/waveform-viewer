@@ -71,9 +71,34 @@
     return 50.29f;
 }
 
-//load Signals from vcd file
-- (void)loadSignals{
-    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"simple" ofType:@"vcd"];
+/**
+ *  Triggered when the user scrolled our tableView
+ *
+ *  @param scrollView          the actual scrollview (our tableview)
+ *  @param velocity            .
+ *  @param targetContentOffset .
+ */
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
+                     withVelocity:(CGPoint)velocity
+              targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+	UITableView *tv = (UITableView*)scrollView;
+	NSIndexPath *indexPathOfTopRowAfterScrolling = [tv indexPathForRowAtPoint:
+													*targetContentOffset
+													];
+	CGRect rectForTopRowAfterScrolling = [tv rectForRowAtIndexPath:
+										  indexPathOfTopRowAfterScrolling
+										  ];
+	targetContentOffset->y=rectForTopRowAfterScrolling.origin.y;
+}
+
+
+/**
+ *  Loads the signals from the selected VCD file
+ */
+- (void)loadSignals {
+	//TODO: get signal from settings!
+    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"normal" ofType:@"vcd"];
     
     [VCD loadWithPath:filePath callback:^(VCD *vcd) {
         
@@ -119,7 +144,6 @@
     self.graph.paddingRight  = 0.0;
     self.graph.paddingBottom = 0.0;
 	
-	
     // Setup plot space
 
     NSInteger coordinate = (self.tblView.visibleCells.count);
@@ -129,23 +153,20 @@
     
     plotSpace.delegate = self;
     
-    plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(800)];
+    plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(800000)];
     plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(coordinate)];
     
     plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
     plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(coordinate)];
 
-//	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)self.graph.axisSet;
-//    CPTXYAxis *x          = axisSet.xAxis;
-//    x.majorIntervalLength         = CPTDecimalFromDouble(1);
-//    x.minorTicksPerInterval       = 0;
+	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)self.graph.axisSet;
+    CPTXYAxis *x				= axisSet.xAxis;
+    x.majorIntervalLength       = CPTDecimalFromDouble(10); //TODO: dynamic scaling
+    x.minorTicksPerInterval     = 0;
+	x.labelOffset = -25;
 
-//	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)self.graph.axisSet;
-//	CPTXYAxis *x = axisSet.xAxis;
-//	CPTXYAxis *y = axisSet.yAxis;
-//	x.labelingPolicy = CPTAxisLabelingPolicyNone;
-//	y.labelingPolicy = CPTAxisLabelingPolicyNone;
-    self.graph.axisSet = nil;
+	CPTXYAxis *y = axisSet.yAxis;
+	y.labelingPolicy = CPTAxisLabelingPolicyNone;
 
 	
 }
@@ -191,7 +212,6 @@
     NSString *ident = (NSString*)plot.identifier;
     NSArray *allVal = [[visibleSignals objectForKey:(NSString*)plot.identifier] valueForKey:@"_values"];
 	return allVal.count;
-//	return 2;
 }
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
