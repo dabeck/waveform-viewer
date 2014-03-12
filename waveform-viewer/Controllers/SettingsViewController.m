@@ -14,15 +14,6 @@
 
 @implementation SettingsViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -55,13 +46,12 @@
     [layer setMasksToBounds:YES];
     [layer setCornerRadius: 4.0];
     [layer setBorderWidth:1.0];
-    
-//    [self tableSelection];
 }
+
+#pragma mark - TableView dataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
     return self.files.count;
 }
 
@@ -72,6 +62,8 @@
 	cell.textLabel.text = [self.files objectAtIndex:indexPath.row];
     return cell;
 }
+
+#pragma mark - TableView delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -84,27 +76,36 @@
     self.lastIndexPath = indexPath;
 }
 
+#pragma mark - Actions
+
+- (IBAction)btnDoneTapped:(id)sender
+{
+    if (![self.selectionType isEqualToString:@"File"])
+	{
+        self.selection = self.urlField.text;
+    }
+    [self.delegate didChooseValue:self.selection];
+}
+
+- (IBAction)changedValue:(id)sender
+{
+    self.selectionType = [self.segmentedControl titleForSegmentAtIndex:self.segmentedControl.selectedSegmentIndex];
+    if ([self.selectionType isEqualToString:@"File"])
+	{
+        [self.urlField setHidden:YES];
+        [self.fileTable setHidden:NO];
+    }
+	else
+	{
+        [self.urlField setHidden:NO];
+        [self.fileTable setHidden:YES];
+    }
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)btnDoneTapped:(id)sender {
-    if (![self.selectionType isEqualToString:@"File"]) {
-        self.selection = self.urlField.text;
-    }
-    [self.delegate didChooseValue:self.selection];
-}
-
-- (IBAction)changedValue:(id)sender {
-    self.selectionType = [self.segmentedControl titleForSegmentAtIndex:self.segmentedControl.selectedSegmentIndex];
-    if ([self.selectionType isEqualToString:@"File"]) {
-        [self.urlField setHidden:YES];
-        [self.fileTable setHidden:NO];
-    } else {
-        [self.urlField setHidden:NO];
-        [self.fileTable setHidden:YES];
-    }
-}
 @end

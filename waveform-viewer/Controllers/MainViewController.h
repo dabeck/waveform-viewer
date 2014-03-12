@@ -14,10 +14,10 @@
 #import "VCDValue.h"
 #import "SettingsViewController.h"
 
-const int CELL_SIZE_LANDSCAPE = 50;
-const int CELL_SIZE_PORTRAIT = 50;
+#define CELL_HEIGHT 50.29f
+#define MAX_VISIBLE_CELLS 14
 
-@interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTPlotSpaceDelegate, CPTPlotDelegate, UITableViewDelegate, UITableViewDataSource, SettingsViewControllerDelegate>
+@interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTPlotSpaceDelegate, CPTPlotDelegate, SettingsViewControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, weak) IBOutlet UIView *mainView;
 @property (nonatomic, weak) IBOutlet CPTGraphHostingView *scatterPlotView;

@@ -8,8 +8,8 @@
 
 #import "MainViewController.h"
 
-@interface MainViewController () {
-	CGPoint actualPosition;
+@interface MainViewController ()
+{
     NSMutableDictionary *visibleSignals;
     NSInteger maxTime;
     CPTPlotRange *xRange;
@@ -21,20 +21,19 @@
 
 @implementation MainViewController
 
-#pragma mark -
-#pragma mark Initialization and teardown
+#pragma mark - Initialization and teardown
 
 -(void)viewDidLoad
 {
     [super viewDidLoad];
     [self.tblView setDelegate:self];
     [self.tblView setDataSource:self];
-    actualPosition = CGPointMake(0, 0);
-	self.countPlot =-1;
     
-    if (!self.parseSelection) {
+    if (!self.parseSelection)
+	{
         [self performSegueWithIdentifier:@"modalIdent" sender:self];
-    } else {
+    } else
+	{
         [self loadSignals];
     }
 }
@@ -51,15 +50,16 @@
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
 	
-    // Release any cached data, images, etc that aren't in use.
+    [self.graph removeFromSuperlayer];
+	
+    [self setupGraph];
+    [self constructScatterPlot];
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    
-    // Return the number of rows in the section.
     return self.signals.count;
 }
 
@@ -72,9 +72,12 @@
     return cell;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 50.29f;
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return CELL_HEIGHT;
 }
+
+#pragma mark - ScrollView delegate
 
 /**
  *  Triggered when the user scrolled our tableView
@@ -88,36 +91,31 @@
               targetContentOffset:(inout CGPoint *)targetContentOffset
 {
 	UITableView *tv = (UITableView*)scrollView;
-	NSIndexPath *indexPathOfTopRowAfterScrolling = [tv indexPathForRowAtPoint:
-													*targetContentOffset
-													];
-	CGRect rectForTopRowAfterScrolling = [tv rectForRowAtIndexPath:
-										  indexPathOfTopRowAfterScrolling
-										  ];
+	NSIndexPath *indexPathOfTopRowAfterScrolling = [tv indexPathForRowAtPoint:*targetContentOffset];
+	CGRect rectForTopRowAfterScrolling = [tv rectForRowAtIndexPath:indexPathOfTopRowAfterScrolling];
 	targetContentOffset->y=rectForTopRowAfterScrolling.origin.y;
-    
-    //self.graph = nil;
-    //[self.graph removeFromSuperlayer];
-    //[self constructScatterPlot];
 }
 
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
     [self.graph removeFromSuperlayer];
-    self.countPlot = -1;
-    //self.graph
+	
     [self setupGraph];
     [self constructScatterPlot];
 }
 
+#pragma mark - VCD Loading & Parsing
+
 /**
  *  Loads the signals from the selected VCD file
  */
-- (void)loadSignals {
-	//TODO: get signal from settings!
-    if ([self.parseSelection  rangeOfString:@"http://"].location == NSNotFound) {
+- (void)loadSignals
+{
+    if ([self.parseSelection  rangeOfString:@"http://"].location == NSNotFound)
+	{
         self.parseSelection = [self.parseSelection stringByReplacingOccurrencesOfString:@".vcd" withString:@""];
         NSString* filePath = [[NSBundle mainBundle] pathForResource:self.parseSelection ofType:@"vcd"];
-    
+		
         [VCD loadWithPath:filePath callback:^(VCD *vcd) {
             if(vcd == nil) {
                 NSLog(@"VCD Parsing Error!");
@@ -126,9 +124,12 @@
             self.signals = [vcd signals];
             [self setup];
         }];
-    } else {
+    }
+	else
+	{
         [VCD loadWithURL:[NSURL URLWithString:self.parseSelection] callback:^(VCD *vcd) {
-            if(vcd == nil) {
+            if(vcd == nil)
+			{
                 NSLog(@"VCD Parsing Error!");
                 return;
             }
@@ -138,43 +139,51 @@
     }
 }
 
-- (void) setup {
-    //refresh Data for Tableview
+/**
+ *  Setup the plot values and prepare some plotting defaults
+ */
+- (void) setup
+{
+	maxTime = 0;
+	
     [self.tblView reloadData];
     
-    for(VCDSignal *newSig in [self.signals allValues]){
-        for(VCDValue *newValue in [newSig valueForKey:@"_values"]){
-            if(maxTime < [newValue time]){
+    for (VCDSignal *newSig in [self.signals allValues])
+	{
+        for (VCDValue *newValue in [newSig valueForKey:@"_values"])
+		{
+            if (maxTime < [newValue time])
+			{
                 maxTime = [newValue time];
             }
         }
-        if(self.tblView.visibleCells.count > 14){
+        if (self.tblView.visibleCells.count > MAX_VISIBLE_CELLS)
+		{
             visibleSignalsCount = (self.tblView.visibleCells.count);
         }
-        else{
-            visibleSignalsCount = 14;
+        else
+		{
+            visibleSignalsCount = MAX_VISIBLE_CELLS;
         }
-        xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
-        yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
-        
-        //configure Graph
-        [self setupGraph];
-        [self constructScatterPlot];
-        
     }
     
-
+	xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
+	yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
+	
+	
+	[self setupGraph];
+	[self constructScatterPlot];
 }
 
-#pragma mark -
-#pragma mark Plot construction methods
+#pragma mark - Plot construction methods
 
-- (void)setupGraph {
+- (void)setupGraph
+{
 	// Create graph from theme
     self.graph = [[CPTXYGraph alloc] initWithFrame:self.scatterPlotView.bounds];
 	self.graph.plotAreaFrame.masksToBorder = NO;
 	self.scatterPlotView.hostedGraph = self.graph;
-
+	
     CPTTheme *theme = [CPTTheme themeNamed:kCPTPlainBlackTheme];
     [self.graph applyTheme:theme];
 	
@@ -184,7 +193,6 @@
     self.graph.paddingBottom = 0.0;
 	
     // Setup plot space
-
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)self.graph.defaultPlotSpace;
 	
     plotSpace.allowsUserInteraction = YES;
@@ -196,7 +204,7 @@
     
     plotSpace.xRange = xRange;
     plotSpace.yRange = yRange;
-
+	
     NSInteger xInterval = 10;
     if(maxTime >= 100000){
         xInterval = 10000;
@@ -207,21 +215,23 @@
     else if(maxTime >= 400){
         xInterval = 100;
     }
-   
+	
     
 	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)self.graph.axisSet;
     CPTXYAxis *x				= axisSet.xAxis;
     x.majorIntervalLength       = CPTDecimalFromDouble(xInterval);
     x.minorTicksPerInterval     = 0;
 	x.labelOffset = -25;
-
+	
 	CPTXYAxis *y = axisSet.yAxis;
 	y.labelingPolicy = CPTAxisLabelingPolicyNone;
-  
-    if(self.tblView.visibleCells.count < 14){
-        [self.tblView setContentInset:UIEdgeInsetsMake((14 -self.tblView.visibleCells.count) * 50.29f, 0, 0, 0)];
+	
+    if (self.tblView.visibleCells.count < MAX_VISIBLE_CELLS)
+	{
+        [self.tblView setContentInset:UIEdgeInsetsMake((MAX_VISIBLE_CELLS - self.tblView.visibleCells.count) * CELL_HEIGHT, 0, 0, 0)];
     }
-    else{
+    else
+	{
         [self.tblView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
     }
     
@@ -229,19 +239,27 @@
 	
 }
 
-
+/**
+ * Constructs a plot for every single
+ * signal that is currently visible
+ */
 - (void)constructScatterPlot
 {
-    
+	self.countPlot = -1;
+
     CPTScatterPlot *dataSourceLinePlot = [[CPTScatterPlot alloc] init];
-	
     CPTMutableLineStyle *lineStyle = [dataSourceLinePlot.dataLineStyle mutableCopy];// Create graph from theme
     visibleSignals = [NSMutableDictionary new];
+	
     // Create a blue plot area
-    for(NSString* name in[self.signals allKeys]){
-        for(UITableViewCell *cell in (self.tblView.visibleCells)){
-            if([cell.textLabel.text isEqualToString:name]){
-                [visibleSignals addEntriesFromDictionary:@{name:self.signals[name] }];
+    for (NSString* name in[self.signals allKeys])
+	{
+        for (UITableViewCell *cell in (self.tblView.visibleCells))
+		{
+            if ([cell.textLabel.text isEqualToString:name])
+			{
+                [visibleSignals addEntriesFromDictionary:@{ name : self.signals[name] }];
+				
                 CPTScatterPlot *boundLinePlot = [[CPTScatterPlot alloc] init];
                 boundLinePlot.identifier = name;
                 
@@ -261,8 +279,7 @@
     }
 }
 
-#pragma mark -
-#pragma mark Plot Data Source Methods
+#pragma mark - CorePlot dataSource
 
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
 {
@@ -275,58 +292,58 @@
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
 {
 	NSString *plotIdent = (NSString *) plot.identifier;
-
-    if (![plotIdent isEqualToString:self.currentIdent]) {
+	
+    if (![plotIdent isEqualToString:self.currentIdent])
+	{
         self.countPlot++;
         self.currentIdent = plotIdent;
     }
 	
-//    if(self.countPlot >= 15){
-//        return nil;
-//    }
     
     VCDSignal *newSig = [visibleSignals objectForKey:plotIdent];
-//  VCDValue * newValue = [newSig valueAtTime:index];
 	NSArray *allVal = [newSig valueForKey:@"_values"];
-
 	NSNumber *number = [NSNumber new];
-    //for(VCDValue* newValue in [allVal ){
     VCDValue * newValue = [allVal objectAtIndex:index];
-        number = [NSNumber numberWithInteger:[newValue.value integerValue]];
+	
+	number = [NSNumber numberWithInteger:[newValue.value integerValue]];
     
-
-        if ( fieldEnum == CPTScatterPlotFieldY ) {
-            
-            if([number isEqualToNumber:[NSNumber numberWithInt:1]]){
-                number = [NSNumber numberWithFloat:(self.countPlot + 0.2)];
-                return  number;
-            }
-            else if([number isEqualToNumber:[NSNumber numberWithInt:0]]){
-                number = [NSNumber numberWithFloat:(self.countPlot + 0.8)];
-                return  number;
-            }
-            else if([newValue.value isEqualToString:@"x"]){
-                number = [NSNumber numberWithFloat:(self.countPlot + 0.4)];
-                return  number;
-            }
-            else if([newValue.value isEqualToString:@"z"]){
-                number = [NSNumber numberWithFloat:(self.countPlot + 0.4)];
-                return  number;
-            }
-            
-            return number;
-        }
-        if ( fieldEnum == CPTScatterPlotFieldX ) {
-            return [NSNumber numberWithInteger:[newValue time]];
-        }
-    //}
+	
+	if (fieldEnum == CPTScatterPlotFieldY)
+	{
+		
+		if([number isEqualToNumber:[NSNumber numberWithInt:1]])
+		{
+			number = [NSNumber numberWithFloat:(self.countPlot + 0.2)];
+			return  number;
+		}
+		else if([number isEqualToNumber:[NSNumber numberWithInt:0]])
+		{
+			number = [NSNumber numberWithFloat:(self.countPlot + 0.8)];
+			return  number;
+		}
+		else if([newValue.value isEqualToString:@"x"])
+		{
+			number = [NSNumber numberWithFloat:(self.countPlot + 0.4)];
+			return  number;
+		}
+		else if([newValue.value isEqualToString:@"z"])
+		{
+			number = [NSNumber numberWithFloat:(self.countPlot + 0.4)];
+			return  number;
+		}
+		
+		return number;
+	}
+	
+	if (fieldEnum == CPTScatterPlotFieldX)
+	{
+		return [NSNumber numberWithInteger:[newValue time]];
+	}
+	
     return nil;
 }
 
--(void)didFinishDrawing:(CPTPlot *)plot
-{
-	NSLog(@"%@", plot.identifier);
-}
+#pragma mark - CorePlot delegates
 
 -(CPTLayer *)dataLabelForPlot:(CPTPlot *)plot recordIndex:(NSUInteger)index
 {
@@ -347,15 +364,17 @@
 }
 
 - (CPTPlotRange *)plotSpace:(CPTPlotSpace *)space
-	   willChangePlotRangeTo:(CPTPlotRange *)newRange
-			   forCoordinate:(CPTCoordinate)coordinate {
+	  willChangePlotRangeTo:(CPTPlotRange *)newRange
+			  forCoordinate:(CPTCoordinate)coordinate
+{
 	
     CPTPlotRange *updatedRange = nil;
 	
     switch (coordinate)
 	{
 		case CPTCoordinateX:
-			if (newRange.locationDouble < 0.0F) {
+			if (newRange.locationDouble < 0.0F)
+			{
 				CPTMutablePlotRange *mutableRange = [newRange mutableCopy];
 				mutableRange.location = CPTDecimalFromFloat(0.0);
 				updatedRange = mutableRange;
@@ -376,8 +395,11 @@
     return updatedRange;
 }
 
-- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"modalIdent"]) {
+#pragma mark - Navigation
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"modalIdent"])
+	{
         UINavigationController *controller = [segue destinationViewController];
         
         SettingsViewController *svc = [[controller childViewControllers] firstObject];
@@ -385,10 +407,13 @@
     }
 }
 
-- (void)didChooseValue:(NSString *)value {
+#pragma mark - SettingsViewController delegate
+- (void)didChooseValue:(NSString *)value
+{
+	self.parseSelection = value;
     [self dismissViewControllerAnimated:YES completion:nil];
-    self.parseSelection = value;
     [self.navigationController popViewControllerAnimated:YES];
     [self loadSignals];
 }
+
 @end

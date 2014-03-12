@@ -21,11 +21,10 @@
 @property (strong, nonatomic) IBOutlet UITextField *urlField;
 @property (strong, nonatomic) IBOutlet UITableView *fileTable;
 
-@property (strong, nonatomic) IBOutlet NSArray *files;
-@property (strong, nonatomic) IBOutlet NSIndexPath *lastIndexPath;
-
-@property (strong, nonatomic) IBOutlet NSString *selection;
-@property (strong, nonatomic) IBOutlet NSString *selectionType;
+@property (strong, nonatomic) NSArray *files;
+@property (strong, nonatomic) NSIndexPath *lastIndexPath;
+@property (strong, nonatomic) NSString *selection;
+@property (strong, nonatomic) NSString *selectionType;
 
 @property (nonatomic, assign) id<SettingsViewControllerDelegate> delegate;
 
