@@ -49,13 +49,14 @@
     NSArray *dirContents = [fm contentsOfDirectoryAtPath:bundleRoot error:nil];
     NSPredicate *fltr = [NSPredicate predicateWithFormat:@"self ENDSWITH '.vcd'"];
     self.files = [dirContents filteredArrayUsingPredicate:fltr];
+    self.selection = [self.files objectAtIndex:0];
 
     CALayer *layer = self.fileTable.layer;
     [layer setMasksToBounds:YES];
     [layer setCornerRadius: 4.0];
     [layer setBorderWidth:1.0];
     
-    [self tableSelection];
+//    [self tableSelection];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -74,11 +75,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self tableSelection];
-}
-
-- (void)tableSelection
-{
+    self.selection = [self.files objectAtIndex:indexPath.row];
     [self.fileTable deselectRowAtIndexPath:self.lastIndexPath animated:NO];
 }
 
@@ -95,8 +92,6 @@
 
 - (IBAction)btnDoneTapped:(id)sender {
     if ([self.selectionType isEqualToString:@"File"]) {
-        self.selection = [self.files objectAtIndex:self.lastIndexPath.row];
-    } else {
         self.selection = self.urlField.text;
     }
     [self.delegate didChooseValue:self.selection];
