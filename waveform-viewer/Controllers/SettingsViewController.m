@@ -103,7 +103,7 @@
 
 
 - (IBAction)btnDoneTapped:(id)sender {
-    if ([self.selectionType isEqualToString:@"File"]) {
+    if (![self.selectionType isEqualToString:@"File"]) {
         self.selection = self.urlField.text;
     }
     [self.delegate didChooseValue:self.selection];
