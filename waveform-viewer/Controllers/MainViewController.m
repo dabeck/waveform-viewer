@@ -114,25 +114,38 @@
  */
 - (void)loadSignals {
 	//TODO: get signal from settings!
-    NSString* filePath = [[NSBundle mainBundle] pathForResource:self.parseSelection ofType:@"vcd"];
+    if ([self.parseSelection  rangeOfString:@"http://"].location == NSNotFound) {
+        self.parseSelection = [self.parseSelection stringByReplacingOccurrencesOfString:@".vcd" withString:@""];
+        NSString* filePath = [[NSBundle mainBundle] pathForResource:self.parseSelection ofType:@"vcd"];
     
-    [VCD loadWithPath:filePath callback:^(VCD *vcd) {
-        
-        if(vcd == nil) {
-            NSLog(@"VCD Parsing Error!");
-            return;
-        }
-        self.signals = [vcd signals];
+        [VCD loadWithPath:filePath callback:^(VCD *vcd) {
+            if(vcd == nil) {
+                NSLog(@"VCD Parsing Error!");
+                return;
+            }
+            self.signals = [vcd signals];
+            [self setup];
+        }];
+    } else {
+        [VCD loadWithURL:[NSURL URLWithString:self.parseSelection] callback:^(VCD *vcd) {
+            if(vcd == nil) {
+                NSLog(@"VCD Parsing Error!");
+                return;
+            }
+            self.signals = [vcd signals];
+            [self setup];
+        }];
+    }
+}
 
-        // ...
-        //refresh Data for Tableview
-        [self.tblView reloadData];
-        
-        for(VCDSignal *newSig in [self.signals allValues]){
-            for(VCDValue *newValue in [newSig valueForKey:@"_values"]){
-                if(maxTime < [newValue time]){
-                    maxTime = [newValue time];
-                }
+- (void) setup {
+    //refresh Data for Tableview
+    [self.tblView reloadData];
+    
+    for(VCDSignal *newSig in [self.signals allValues]){
+        for(VCDValue *newValue in [newSig valueForKey:@"_values"]){
+            if(maxTime < [newValue time]){
+                maxTime = [newValue time];
             }
         }
         if(self.tblView.visibleCells.count > 14){
@@ -153,10 +166,14 @@
     
     
     
-    //add plots
+    visibleSignalsCount = (self.tblView.visibleCells.count);
+    xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
+    yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
     
+    //configure Graph
+    [self setupGraph];
+    [self constructScatterPlot];
 }
-
 
 #pragma mark -
 #pragma mark Plot construction methods
@@ -381,7 +398,6 @@
 - (void)didChooseValue:(NSString *)value {
     [self dismissViewControllerAnimated:YES completion:nil];
     self.parseSelection = value;
-    self.parseSelection = [self.parseSelection stringByReplacingOccurrencesOfString:@".vcd" withString:@""];
     [self.navigationController popViewControllerAnimated:YES];
     [self loadSignals];
 }
