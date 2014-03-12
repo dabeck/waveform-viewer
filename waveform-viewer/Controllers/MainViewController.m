@@ -51,6 +51,7 @@
     [super didReceiveMemoryWarning];
 	
     [self.graph removeFromSuperlayer];
+	visibleSignals = nil;
 	
     [self setupGraph];
     [self constructScatterPlot];
@@ -80,10 +81,13 @@
 #pragma mark - ScrollView delegate
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-	[self.graph removeFromSuperlayer];
-	
-    [self setupGraph];
-    [self constructScatterPlot];
+	if (!decelerate)
+	{
+		[self.graph removeFromSuperlayer];
+		
+		[self setupGraph];
+		[self constructScatterPlot];
+	}
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
@@ -135,7 +139,8 @@
 - (void) setup
 {
 	maxTime = 0;
-	
+	[self.tblView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
+
     [self.tblView reloadData];
     
     for (VCDSignal *newSig in [self.signals allValues])
@@ -169,7 +174,7 @@
 		}
 	}
     
-	if (self.tblView.visibleCells.count > MAX_VISIBLE_CELLS)
+	if (self.tblView.visibleCells.count != MAX_VISIBLE_CELLS)
 	{
 		visibleSignalsCount = self.tblView.visibleCells.count;
 	}
@@ -192,7 +197,11 @@
 {
 	// Create graph from theme
     self.graph = [[CPTXYGraph alloc] initWithFrame:self.scatterPlotView.bounds];
-	self.graph.plotAreaFrame.masksToBorder = NO;
+	self.graph.plotAreaFrame.masksToBorder = YES;
+	
+	//Very VERY VERY!!! Important property to reduce memory usage
+	[self.graph setMasksToBorder:YES];
+	
 	self.scatterPlotView.hostedGraph = self.graph;
 	
     CPTTheme *theme = [CPTTheme themeNamed:kCPTPlainBlackTheme];
@@ -215,7 +224,7 @@
     
     plotSpace.xRange = xRange;
     plotSpace.yRange = yRange;
-	
+
     NSInteger xInterval = 10;
     if(maxTime >= 100000){
         xInterval = 10000;
@@ -227,16 +236,26 @@
         xInterval = 100;
     }
 	
-    
+	CPTMutableLineStyle *lineStyle = [CPTMutableLineStyle new];// Create graph from theme
+	lineStyle.lineColor  = [CPTColor darkGrayColor];
+	lineStyle.lineWidth  = 0.5f;
+	
 	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)self.graph.axisSet;
     CPTXYAxis *x				= axisSet.xAxis;
     x.majorIntervalLength       = CPTDecimalFromDouble(xInterval);
+	x.majorTickLength			= self.graph.bounds.size.height * 2;
+	x.majorTickLineStyle		= lineStyle;
     x.minorTicksPerInterval     = 0;
-	x.labelOffset = -25;
+	x.labelOffset				= -(self.graph.bounds.size.height * 2);
+	x.labelingPolicy			= CPTAxisLabelingPolicyFixedInterval;
 	
 	CPTXYAxis *y = axisSet.yAxis;
-	y.labelingPolicy = CPTAxisLabelingPolicyNone;
+    y.majorIntervalLength       = CPTDecimalFromDouble(1);
+    y.minorTicksPerInterval     = 1;
+	y.majorTickLineStyle		= lineStyle;
+	y.majorTickLength			= INT16_MAX;
 	
+	 
     if (visibleSignalsCount < MAX_VISIBLE_CELLS)
 	{
         [self.tblView setContentInset:UIEdgeInsetsMake((MAX_VISIBLE_CELLS - visibleSignalsCount) * CELL_HEIGHT, 0, 0, 0)];
@@ -260,6 +279,9 @@
 
     CPTScatterPlot *dataSourceLinePlot = [[CPTScatterPlot alloc] init];
     CPTMutableLineStyle *lineStyle = [dataSourceLinePlot.dataLineStyle mutableCopy];// Create graph from theme
+	lineStyle.lineColor  = [CPTColor redColor];
+
+	
     visibleSignals = [NSMutableDictionary new];
 	
     // Create a blue plot area
@@ -269,19 +291,16 @@
 		{
             if ([cell.textLabel.text isEqualToString:name])
 			{
+				CGRect rectInTableView = [self.tblView rectForRowAtIndexPath:[self.tblView indexPathForCell:cell]];
+				NSLog(@"%@ - %f",name, rectInTableView.origin.y);
+
                 [visibleSignals addEntriesFromDictionary:@{ name : self.signals[name] }];
 				
                 CPTScatterPlot *boundLinePlot = [[CPTScatterPlot alloc] init];
                 boundLinePlot.identifier = name;
-                
-                lineStyle            = [boundLinePlot.dataLineStyle mutableCopy];
-                lineStyle.miterLimit = 1.0;
-                lineStyle.lineWidth  = 1.0;
-                lineStyle.lineColor  = [CPTColor redColor];
                 boundLinePlot.dataLineStyle = lineStyle;
-                
                 boundLinePlot.dataSource     = self;
-                boundLinePlot.cachePrecision = CPTPlotCachePrecisionDouble;
+                boundLinePlot.cachePrecision = CPTPlotCachePrecisionAuto;
                 boundLinePlot.interpolation  = CPTScatterPlotInterpolationStepped;
                 [self.graph addPlot:boundLinePlot];
             }
@@ -313,35 +332,29 @@
     
     VCDSignal *newSig = [visibleSignals objectForKey:plotIdent];
 	NSArray *allVal = [newSig valueForKey:@"_values"];
-	NSNumber *number = [NSNumber new];
     VCDValue * newValue = [allVal objectAtIndex:index];
 	
-	number = [NSNumber numberWithInteger:[newValue.value integerValue]];
-    
 	
 	if (fieldEnum == CPTScatterPlotFieldY)
 	{
+		NSNumber *number = [NSNumber new];
+		NSString *newValueString = newValue.value;
+		number = [NSNumber numberWithInteger:[newValueString integerValue]];
+
 		
-		if([number isEqualToNumber:[NSNumber numberWithInt:1]])
+		if (![newValueString isEqualToString:@"x"] && ![newValueString isEqualToString:@"z"] && [number isEqualToNumber:@1])
 		{
-			number = [NSNumber numberWithFloat:(self.countPlot + 0.2)];
-			return  number;
+			number = @(self.countPlot + 0.8);
 		}
-		else if([number isEqualToNumber:[NSNumber numberWithInt:0]])
+		else if (![newValueString isEqualToString:@"x"] && ![newValueString isEqualToString:@"z"] && [number isEqualToNumber:@0])
 		{
-			number = [NSNumber numberWithFloat:(self.countPlot + 0.8)];
-			return  number;
+			number = @(self.countPlot + 0.2);
 		}
-		else if([newValue.value isEqualToString:@"x"])
+		else if ([newValueString isEqualToString:@"x"] || [newValueString isEqualToString:@"z"])
 		{
-			number = [NSNumber numberWithFloat:(self.countPlot + 0.4)];
-			return  number;
+			number = @(self.countPlot + 0.4);
 		}
-		else if([newValue.value isEqualToString:@"z"])
-		{
-			number = [NSNumber numberWithFloat:(self.countPlot + 0.4)];
-			return  number;
-		}
+		NSLog(@"Signal: %@  -- X: %ld Y: %@ RESULT Y: %@", newSig.name, (long)newValue.time, newValue.value, number);
 		
 		return number;
 	}
@@ -355,25 +368,6 @@
 }
 
 #pragma mark - CorePlot delegates
-
-- (CPTLayer *)dataLabelForPlot:(CPTPlot *)plot recordIndex:(NSUInteger)index
-{
-    static CPTMutableTextStyle *text = nil;
-	
-    if ( !text ) {
-        text       = [[CPTMutableTextStyle alloc] init];
-        text.color = [CPTColor blackColor];
-    }
-	
-    CPTTextLayer *newLayer = nil;
-    
-    if ( [plot isKindOfClass:[CPTScatterPlot class]] ) {
-        newLayer = [[CPTTextLayer alloc] initWithText:[NSString stringWithFormat:@"%lu", (unsigned long)index] style:text];
-    }
-	
-    return newLayer;
-}
-
 - (CPTPlotRange *)plotSpace:(CPTPlotSpace *)space
 	  willChangePlotRangeTo:(CPTPlotRange *)newRange
 			  forCoordinate:(CPTCoordinate)coordinate
