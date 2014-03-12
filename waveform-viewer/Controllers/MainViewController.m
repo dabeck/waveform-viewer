@@ -12,6 +12,9 @@
 	CGPoint actualPosition;
     NSMutableDictionary *visibleSignals;
     NSInteger maxTime;
+    CPTPlotRange *xRange;
+    CPTPlotRange *yRange;
+    NSInteger visibleSignalsCount;
 }
 
 @end
@@ -93,6 +96,10 @@
 										  indexPathOfTopRowAfterScrolling
 										  ];
 	targetContentOffset->y=rectForTopRowAfterScrolling.origin.y;
+    
+    //self.graph = nil;
+    //[self.graph removeFromSuperlayer];
+    //[self constructScatterPlot];
 }
 
 /**
@@ -168,10 +175,10 @@
     plotSpace.delegate = self;
     
     plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
-    plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(coordinate)];
+    plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
     
-    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
-    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(coordinate)];
+    plotSpace.xRange = xRange;
+    plotSpace.yRange = yRange;
 
     NSInteger xInterval = 10;
     if(maxTime >= 100000){
@@ -328,9 +335,11 @@
 				CPTMutablePlotRange *mutableRange = [newRange mutableCopy];
 				mutableRange.location = CPTDecimalFromFloat(0.0);
 				updatedRange = mutableRange;
+                xRange = updatedRange;
 			}
 			else {
 				updatedRange = newRange;
+                xRange = updatedRange;
 			}
 			break;
 		case CPTCoordinateY:
