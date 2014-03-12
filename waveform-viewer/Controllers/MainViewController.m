@@ -11,6 +11,7 @@
 @interface MainViewController () {
 	CGPoint actualPosition;
     NSMutableDictionary *visibleSignals;
+    NSInteger maxTime;
 }
 
 @end
@@ -98,7 +99,7 @@
  */
 - (void)loadSignals {
 	//TODO: get signal from settings!
-    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"normal" ofType:@"vcd"];
+    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"simple" ofType:@"vcd"];
     
     [VCD loadWithPath:filePath callback:^(VCD *vcd) {
         
@@ -111,18 +112,34 @@
         // ...
         //refresh Data for Tableview
         [self.tblView reloadData];
-		
-		
-		[self setupGraph];
-		
-		//for (VCDSignal *sig in [[vcd signals] allValues]) {
-			//if([sig.name isEqualToString:@"clock"] || [sig.name isEqualToString:@"z [8]"]) {
-				[self constructScatterPlot];
-			//}
-		//}
-
+        
+//		for(VCDSignal *newSig in [self.signals allKeys]){
+//            for(VCDValue *newValue in [newSig valueForKey:@"_values"]){
+//                if(maxTime < [newValue time]){
+//                    maxTime = [newValue time];
+//                }
+//            }
+//        }
+        
+        for(VCDSignal *newSig in [self.signals allValues]){
+            for(VCDValue *newValue in [newSig valueForKey:@"_values"]){
+                if(maxTime < [newValue time]){
+                    maxTime = [newValue time];
+                }
+            }
+        }
+        
+        //configure Graph
+        [self setupGraph];
+        [self constructScatterPlot];
+        
+        
     }];
     
+    
+    
+    
+    //add plots
     
 }
 
@@ -153,20 +170,33 @@
     
     plotSpace.delegate = self;
     
-    plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(800000)];
+    plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
     plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(coordinate)];
     
-    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
+    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
     plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(coordinate)];
 
+    NSInteger xInterval = 10;
+    if(maxTime >= 100000){
+        xInterval = 10000;
+    }
+    else if(maxTime >= 10000){
+        xInterval = 1000;
+    }
+    else if(maxTime >= 400){
+        xInterval = 100;
+    }
+   
+    
 	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)self.graph.axisSet;
     CPTXYAxis *x				= axisSet.xAxis;
-    x.majorIntervalLength       = CPTDecimalFromDouble(10); //TODO: dynamic scaling
+    x.majorIntervalLength       = CPTDecimalFromDouble(xInterval);
     x.minorTicksPerInterval     = 0;
 	x.labelOffset = -25;
 
 	CPTXYAxis *y = axisSet.yAxis;
 	y.labelingPolicy = CPTAxisLabelingPolicyNone;
+  
 
 	
 }
@@ -209,7 +239,6 @@
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
 {
 	// For each line the number of different values e.g. 0,1 = 2 ...
-    NSString *ident = (NSString*)plot.identifier;
     NSArray *allVal = [[visibleSignals objectForKey:(NSString*)plot.identifier] valueForKey:@"_values"];
 	return allVal.count;
 }
@@ -235,7 +264,6 @@
 	NSNumber *number = [NSNumber new];
     //for(VCDValue* newValue in [allVal ){
     VCDValue * newValue = [allVal objectAtIndex:index];
-        NSInteger newVa = [newValue.value integerValue];
         number = [NSNumber numberWithInteger:[newValue.value integerValue]];
     
 
