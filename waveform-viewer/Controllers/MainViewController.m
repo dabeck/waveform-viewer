@@ -26,7 +26,7 @@
     [self.tblView setDataSource:self];
 
 	actualPosition = CGPointMake(0, 0);
-	
+	self.countPlot =-1;
 	//resize the views
 	
     [self loadSignals];
@@ -66,6 +66,10 @@
     return cell;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 50.29f;
+}
+
 //load Signals from vcd file
 - (void)loadSignals{
     NSString* filePath = [[NSBundle mainBundle] pathForResource:@"simple" ofType:@"vcd"];
@@ -85,11 +89,12 @@
 		
 		[self setupGraph];
 		
-		for (VCDSignal *sig in [[vcd signals] allValues]) {
-			if ([sig.name isEqualToString:@"clock"] || [sig.name isEqualToString:@"z [8]"]) {
-				[self constructScatterPlot:sig.name];
-			}
-		}
+		//for (VCDSignal *sig in [[vcd signals] allValues]) {
+			//if([sig.name isEqualToString:@"clock"] || [sig.name isEqualToString:@"z [8]"]) {
+				[self constructScatterPlot];
+			//}
+		//}
+
     }];
     
     
@@ -115,6 +120,8 @@
 	
 	
     // Setup plot space
+
+    NSInteger coordinate = (self.tblView.visibleCells.count);
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)self.graph.defaultPlotSpace;
 	
     plotSpace.allowsUserInteraction = YES;
@@ -122,28 +129,28 @@
     plotSpace.delegate = self;
     
     plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(800)];
-    plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(15)];
-
+    plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(coordinate)];
+    
     plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
-    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(15)];
+    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(coordinate)];
 
 //	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)self.graph.axisSet;
 //    CPTXYAxis *x          = axisSet.xAxis;
 //    x.majorIntervalLength         = CPTDecimalFromDouble(1);
 //    x.minorTicksPerInterval       = 0;
 
-	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)self.graph.axisSet;
-	CPTXYAxis *x = axisSet.xAxis;
-	CPTXYAxis *y = axisSet.yAxis;
-	x.labelingPolicy = CPTAxisLabelingPolicyNone;
-	y.labelingPolicy = CPTAxisLabelingPolicyNone;
+//	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)self.graph.axisSet;
+//	CPTXYAxis *x = axisSet.xAxis;
+//	CPTXYAxis *y = axisSet.yAxis;
+//	x.labelingPolicy = CPTAxisLabelingPolicyNone;
+//	y.labelingPolicy = CPTAxisLabelingPolicyNone;
+    self.graph.axisSet = nil;
 
-//	self.graph.axisSet = nil;
 	
 }
 
 
-- (void)constructScatterPlot:(NSString *)identifier
+- (void)constructScatterPlot
 {
     
     CPTScatterPlot *dataSourceLinePlot = [[CPTScatterPlot alloc] init];
@@ -151,19 +158,23 @@
     CPTMutableLineStyle *lineStyle = [dataSourceLinePlot.dataLineStyle mutableCopy];// Create graph from theme
     
     // Create a blue plot area
-    CPTScatterPlot *boundLinePlot = [[CPTScatterPlot alloc] init];
-    boundLinePlot.identifier = identifier;
-	
-    lineStyle            = [boundLinePlot.dataLineStyle mutableCopy];
-    lineStyle.miterLimit = 1.0;
-    lineStyle.lineWidth  = 1.0;
-    lineStyle.lineColor  = [CPTColor redColor];
-    boundLinePlot.dataLineStyle = lineStyle;
-	
-    boundLinePlot.dataSource     = self;
-    boundLinePlot.cachePrecision = CPTPlotCachePrecisionDouble;
-    boundLinePlot.interpolation  = CPTScatterPlotInterpolationStepped;
-    [self.graph addPlot:boundLinePlot];
+    for (VCDSignal *sig in [self.signals allValues] ) {
+        if([sig.name isEqualToString:@"z [5]"]||[sig.name isEqualToString:@"z [1]"]||[sig.name isEqualToString:@"z [2]"]||[sig.name isEqualToString:@"z [3]"]||[sig.name isEqualToString:@"z [4]"]||[sig.name isEqualToString:@"z [5]"]||[sig.name isEqualToString:@"z [6]"]||[sig.name isEqualToString:@"z [7]"]||[sig.name isEqualToString:@"z [8]"]||[sig.name isEqualToString:@"z [9]"]||[sig.name isEqualToString:@"z [10]"]||[sig.name isEqualToString:@"z [11]"]||[sig.name isEqualToString:@"z [12]"]||[sig.name isEqualToString:@"z [13]"]||[sig.name isEqualToString:@"z [14]"]){
+            CPTScatterPlot *boundLinePlot = [[CPTScatterPlot alloc] init];
+            boundLinePlot.identifier = [sig name];
+            
+            lineStyle            = [boundLinePlot.dataLineStyle mutableCopy];
+            lineStyle.miterLimit = 1.0;
+            lineStyle.lineWidth  = 1.0;
+            lineStyle.lineColor  = [CPTColor redColor];
+            boundLinePlot.dataLineStyle = lineStyle;
+            
+            boundLinePlot.dataSource     = self;
+            boundLinePlot.cachePrecision = CPTPlotCachePrecisionDouble;
+            boundLinePlot.interpolation  = CPTScatterPlotInterpolationStepped;
+            [self.graph addPlot:boundLinePlot];
+        }
+    }
 }
 
 #pragma mark -
@@ -213,6 +224,10 @@
         self.currentIdent = plotIdent;
     }
 	
+    if(self.countPlot >= 15){
+        return nil;
+    }
+    
 //	VCDSignal *newSig = [self.signals objectForKey:plotIdent];
 //  VCDValue * newValue = [newSig valueAtTime:index];
 	NSArray *allVal = [[self.signals objectForKey:plotIdent] valueForKey:@"_values"];

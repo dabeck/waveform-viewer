@@ -13,8 +13,8 @@
 #import "VCDSignal.h"
 #import "VCDValue.h"
 
-const int CELL_SIZE_LANDSCAPE = 48;
-const int CELL_SIZE_PORTRAIT = 48;
+const int CELL_SIZE_LANDSCAPE = 50;
+const int CELL_SIZE_PORTRAIT = 50;
 
 @interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTPlotSpaceDelegate, CPTPlotDelegate, UITableViewDelegate, UITableViewDataSource>
 
