@@ -203,38 +203,10 @@
 
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
 {
-	// For each line the number of different values e.g. 0,1 = 2 ...
     NSArray *allVal = [[self.signals objectForKey:plot.identifier] valueForKey:@"_values"];
-//	NSLog(@"%@", plot.identifier);
 	return allVal.count;
-//	return 2;
 }
 
-//- (NSArray *)numbersForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndexRange:(NSRange)indexRange {
-//	return @[@5, @5];
-//}
-
-//- (NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)idx {
-//	NSNumber *num;
-//	
-//    NSArray *allVal = [[self.signals objectForKey:plot.identifier] valueForKey:@"_values"];
-//    VCDValue * currentValue = [allVal objectAtIndex:idx];
-//	
-//	if ( fieldEnum == CPTScatterPlotFieldY ) {
-//		if ([(NSString *)plot.identifier isEqualToString:@"z [8]"]) {
-//			num = [NSNumber numberWithInteger:[[NSString stringWithUTF8String:currentValue.cValue] integerValue]+2];
-//		} else {
-//			num = [NSNumber numberWithInteger:[[NSString stringWithUTF8String:currentValue.cValue] integerValue]];
-//		}
-//	}
-//	
-//	if ( fieldEnum == CPTScatterPlotFieldX ) {
-//		num = [NSDecimalNumber numberWithInteger:[currentValue time]/10];
-//	}
-//
-//	
-//	return num;
-//}
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
 {
