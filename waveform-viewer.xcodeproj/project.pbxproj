@@ -30,6 +30,7 @@
 		658FAA3F18C0A1EC006857FD /* VCDParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 658FAA3918C0A1EC006857FD /* VCDParser.m */; };
 		658FAA4018C0A1EC006857FD /* VCDSignal.m in Sources */ = {isa = PBXBuildFile; fileRef = 658FAA3B18C0A1EC006857FD /* VCDSignal.m */; };
 		658FAA4118C0A1EC006857FD /* VCDValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 658FAA3D18C0A1EC006857FD /* VCDValue.m */; };
+		65FE8C8A18D0768500E29DB1 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65FE8C8918D0768500E29DB1 /* SettingsViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,8 @@
 		658FAA3B18C0A1EC006857FD /* VCDSignal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VCDSignal.m; sourceTree = "<group>"; };
 		658FAA3C18C0A1EC006857FD /* VCDValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VCDValue.h; sourceTree = "<group>"; };
 		658FAA3D18C0A1EC006857FD /* VCDValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VCDValue.m; sourceTree = "<group>"; };
+		65FE8C8818D0768500E29DB1 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		65FE8C8918D0768500E29DB1 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		6ACF787A715640C3A89983D2 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CA803F2397F4AF081CCF4C6 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -211,6 +214,8 @@
 			children = (
 				658FAA3018C08DE9006857FD /* MainViewController.h */,
 				658FAA3118C08DE9006857FD /* MainViewController.m */,
+				65FE8C8818D0768500E29DB1 /* SettingsViewController.h */,
+				65FE8C8918D0768500E29DB1 /* SettingsViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -381,6 +386,7 @@
 				658FAA3F18C0A1EC006857FD /* VCDParser.m in Sources */,
 				654F2ED718BC9E2700B870B8 /* AppDelegate.m in Sources */,
 				658FAA4118C0A1EC006857FD /* VCDValue.m in Sources */,
+				65FE8C8A18D0768500E29DB1 /* SettingsViewController.m in Sources */,
 				658FAA3E18C0A1EC006857FD /* VCD.m in Sources */,
 				658FAA3218C08DE9006857FD /* MainViewController.m in Sources */,
 				654F2ED318BC9E2700B870B8 /* main.m in Sources */,

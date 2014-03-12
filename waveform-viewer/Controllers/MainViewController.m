@@ -72,7 +72,7 @@
 
 //load Signals from vcd file
 - (void)loadSignals{
-    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"simple" ofType:@"vcd"];
+    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"normal" ofType:@"vcd"];
     
     [VCD loadWithPath:filePath callback:^(VCD *vcd) {
         
@@ -128,7 +128,7 @@
     
     plotSpace.delegate = self;
     
-    plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(800)];
+    plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(800000)];
     plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(coordinate)];
     
     plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(10)];
@@ -159,7 +159,7 @@
     
     // Create a blue plot area
     for (VCDSignal *sig in [self.signals allValues] ) {
-        if([sig.name isEqualToString:@"z [5]"]||[sig.name isEqualToString:@"z [1]"]||[sig.name isEqualToString:@"z [2]"]||[sig.name isEqualToString:@"z [3]"]||[sig.name isEqualToString:@"z [4]"]||[sig.name isEqualToString:@"z [5]"]||[sig.name isEqualToString:@"z [6]"]||[sig.name isEqualToString:@"z [7]"]||[sig.name isEqualToString:@"z [8]"]||[sig.name isEqualToString:@"z [9]"]||[sig.name isEqualToString:@"z [10]"]||[sig.name isEqualToString:@"z [11]"]||[sig.name isEqualToString:@"z [12]"]||[sig.name isEqualToString:@"z [13]"]||[sig.name isEqualToString:@"z [14]"]){
+        if([sig.name isEqualToString:@"z [5]"]||[sig.name isEqualToString:@"z [1]"]||[sig.name isEqualToString:@"z [2]"]||[sig.name isEqualToString:@"z [3]"]||[sig.name isEqualToString:@"z [4]"]||[sig.name isEqualToString:@"z [5]"]||[sig.name isEqualToString:@"z [6]"]||[sig.name isEqualToString:@"z [7]"]||[sig.name isEqualToString:@"z [8]"]||[sig.name isEqualToString:@"z [9]"]||[sig.name isEqualToString:@"z [10]"]||[sig.name isEqualToString:@"z [11]"]||[sig.name isEqualToString:@"z [12]"]||[sig.name isEqualToString:@"z [13]"]||[sig.name isEqualToString:@"clock"]){
             CPTScatterPlot *boundLinePlot = [[CPTScatterPlot alloc] init];
             boundLinePlot.identifier = [sig name];
             

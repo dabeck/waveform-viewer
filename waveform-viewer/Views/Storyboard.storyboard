@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="SOr-uM-4yc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="SOr-uM-4yc">
     <dependencies>
         <deployment defaultVersion="1792" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
@@ -18,7 +18,48 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ReS-tF-EYP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2470" y="-2094"/>
+            <point key="canvasLocation" x="-2604" y="-2075"/>
+        </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="Y6S-pI-R4f">
+            <objects>
+                <viewController id="MGe-ID-Ega" customClass="SettingsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="FIk-PA-bfS"/>
+                        <viewControllerLayoutGuide type="bottom" id="cBM-DY-gEE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="rqZ-pW-nNM">
+                        <rect key="frame" x="0.0" y="64" width="768" height="960"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <navigationItem key="navigationItem" id="yE3-ac-KUq">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="cLx-m9-E1K">
+                            <connections>
+                                <action selector="btnDoneTapped:" destination="MGe-ID-Ega" id="BRd-TN-RRi"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Nvd-AS-1zc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1547" y="-3359"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Ct1-HS-rUU">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="bCf-pG-6pU" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="ssA-0g-e4N">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="MGe-ID-Ega" kind="relationship" relationship="rootViewController" id="QqT-GE-hmK"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rpg-dE-oKh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2604" y="-3359"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="9Ei-QL-rOj">
@@ -67,7 +108,13 @@
                             <constraint firstAttribute="trailing" secondItem="QeC-I8-GHT" secondAttribute="trailing" id="h9m-me-sWG"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="U34-Rv-s0M"/>
+                    <navigationItem key="navigationItem" id="U34-Rv-s0M">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="S08-fs-Z1L">
+                            <connections>
+                                <segue destination="bCf-pG-6pU" kind="modal" id="dFE-5g-knS"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="mainView" destination="eHJ-UU-KUe" id="D8C-XG-a7y"/>
                         <outlet property="scatterPlotView" destination="QeC-I8-GHT" id="hZ6-7m-GmX"/>
@@ -76,7 +123,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="24r-kq-3Op" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1235" y="-2075"/>
+            <point key="canvasLocation" x="-1547" y="-2075"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
