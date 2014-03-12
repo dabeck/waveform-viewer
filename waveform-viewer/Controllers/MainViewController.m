@@ -79,23 +79,31 @@
 }
 
 #pragma mark - ScrollView delegate
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-	if (!decelerate)
-	{
-		[self.graph removeFromSuperlayer];
-		
-		[self setupGraph];
-		[self constructScatterPlot];
-	}
-}
+//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+//{
+//	if (!decelerate)
+//	{
+//		[self.graph removeFromSuperlayer];
+//		
+//		[self setupGraph];
+//		[self constructScatterPlot];
+//	}
+//}
+//
+//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+//{
+//	[self.graph removeFromSuperlayer];
+//	
+//    [self setupGraph];
+//    [self constructScatterPlot];
+//}
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
 	[self.graph removeFromSuperlayer];
 	
-    [self setupGraph];
-    [self constructScatterPlot];
+	[self setupGraph];
+	[self constructScatterPlot];
 }
 
 #pragma mark - VCD Loading & Parsing
@@ -285,7 +293,7 @@
     visibleSignals = [NSMutableDictionary new];
 	
     // Create a blue plot area
-    for (NSString* name in[self.signals allKeys])
+    for (NSString* name in [self.signals allKeys])
 	{
         for (UITableViewCell *cell in (self.tblView.visibleCells))
 		{
