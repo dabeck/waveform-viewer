@@ -32,7 +32,6 @@
     actualPosition = CGPointMake(0, 0);
 	self.countPlot =-1;
     
-
     if (!self.parseSelection) {
         [self performSegueWithIdentifier:@"modalIdent" sender:self];
     } else {
@@ -136,8 +135,12 @@
                 }
             }
         }
-        
-        visibleSignalsCount = (self.tblView.visibleCells.count);
+        if(self.tblView.visibleCells.count > 14){
+            visibleSignalsCount = (self.tblView.visibleCells.count);
+        }
+        else{
+            visibleSignalsCount = 14;
+        }
         xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
         yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
         
@@ -208,7 +211,14 @@
 	CPTXYAxis *y = axisSet.yAxis;
 	y.labelingPolicy = CPTAxisLabelingPolicyNone;
   
-
+    if(self.tblView.visibleCells.count < 14){
+        [self.tblView setContentInset:UIEdgeInsetsMake((14 -self.tblView.visibleCells.count) * 50.29f, 0, 0, 0)];
+    }
+    else{
+        [self.tblView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
+    }
+    
+    [self.tblView reloadData];
 	
 }
 
