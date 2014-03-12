@@ -31,9 +31,7 @@
     [self.tblView setDataSource:self];
     actualPosition = CGPointMake(0, 0);
 	self.countPlot =-1;
-	//resize the views
-
-    [self loadSignals];
+    
 
     if (!self.parseSelection) {
         [self performSegueWithIdentifier:@"modalIdent" sender:self];
