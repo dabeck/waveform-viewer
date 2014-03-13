@@ -21,6 +21,7 @@
     [self.fileTable setDataSource:self];
     [self initObjects];
     [self.fileTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:0];
+    [self loadSignals];
 }
 
 - (void) initObjects
@@ -48,6 +49,34 @@
     [layer setBorderWidth:1.0];
 }
 
+/**
+ *  Loads the signals from the selected VCD file
+ */
+- (void)loadSignals
+{
+    
+        self.parseSelection = [self.selection stringByReplacingOccurrencesOfString:@".vcd" withString:@""];
+        NSString* filePath = [[NSBundle mainBundle] pathForResource:self.parseSelection ofType:@"vcd"];
+		
+        [VCD loadWithPath:filePath callback:^(VCD *vcd) {
+            if(vcd == nil) {
+                NSLog(@"VCD Parsing Error!");
+                return;
+            }
+            self.signals = [vcd signals];
+            NSLog(@"Signals!");
+        }];
+    
+//        [VCD loadWithURL:[NSURL URLWithString:self.parseSelection] callback:^(VCD *vcd) {
+//            if(vcd == nil)
+//			{
+//                NSLog(@"VCD Parsing Error!");
+//                return;
+//            }
+//            self.signals = [vcd signals];
+//        }];
+}
+
 #pragma mark - TableView dataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -69,6 +98,7 @@
 {
     self.selection = [self.files objectAtIndex:indexPath.row];
     [self.fileTable deselectRowAtIndexPath:self.lastIndexPath animated:NO];
+    [self loadSignals];
 }
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -85,6 +115,7 @@
         self.selection = self.urlField.text;
     }
     [self.delegate didChooseValue:self.selection];
+    [self.delegate didChooseSignals:self.signals];
 }
 
 - (IBAction)changedValue:(id)sender

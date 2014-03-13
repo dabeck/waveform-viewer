@@ -465,4 +465,13 @@
     [self loadSignals];
 }
 
+- (void)didChooseSignals:(NSDictionary *)value
+{
+    NSLog(@"signals received");
+//	self.parseSelection = value;
+//    [self dismissViewControllerAnimated:YES completion:nil];
+//    [self.navigationController popViewControllerAnimated:YES];
+//    [self loadSignals];
+}
+
 @end

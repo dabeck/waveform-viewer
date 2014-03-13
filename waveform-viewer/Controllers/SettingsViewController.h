@@ -7,11 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "VCD.h"
+#import "VCDParser.h"
+#import "VCDSignal.h"
+#import "VCDValue.h"
 
 
 @protocol SettingsViewControllerDelegate <NSObject>
 
 - (void)didChooseValue:(NSString *)value;
+- (void)didChooseSignals:(NSDictionary *)value;
 
 @end
 
@@ -23,8 +28,12 @@
 
 @property (strong, nonatomic) NSArray *files;
 @property (strong, nonatomic) NSIndexPath *lastIndexPath;
+
 @property (strong, nonatomic) NSString *selection;
 @property (strong, nonatomic) NSString *selectionType;
+@property (strong, nonatomic) NSString *parseSelection;
+
+@property (strong, nonatomic) NSDictionary *signals;
 
 @property (nonatomic, assign) id<SettingsViewControllerDelegate> delegate;
 
