@@ -29,20 +29,25 @@
     [self.tblView setDelegate:self];
     [self.tblView setDataSource:self];
     
-    if (!self.parseSelection)
-	{
-        [self performSegueWithIdentifier:@"modalIdent" sender:self];
-    } else
-	{
-        [self loadSignals];
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(loadExternalFile:)
+                                                 name:@"openVCDDataFile" object:nil];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
 	
-	//scatterPlotView.frame = self.view.bounds;
+	
+    if (!self.parseSelection)
+	{
+        [self performSegueWithIdentifier:@"modalIdent" sender:self];
+    }
+	else
+	{
+        [self loadSignals];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -55,6 +60,16 @@
 	
     [self setupGraph];
     [self constructScatterPlot];
+}
+
+- (void)loadExternalFile:(NSNotification*)notification {
+	NSURL *selectedFile = [notification object];
+
+	NSLog(@"%@", selectedFile);
+	self.parseSelection = [selectedFile absoluteString];
+	[self dismissViewControllerAnimated:NO completion:nil];
+	[self.graph removeFromSuperlayer];
+	[self loadSignals];
 }
 
 #pragma mark - Table view data source
@@ -120,7 +135,7 @@
  */
 - (void)loadSignals
 {
-    if ([self.parseSelection  rangeOfString:@"http://"].location == NSNotFound)
+    if ([self.parseSelection  rangeOfString:@"http://"].location == NSNotFound && [self.parseSelection rangeOfString:@"file://"].location == NSNotFound)
 	{
         self.parseSelection = [self.parseSelection stringByReplacingOccurrencesOfString:@".vcd" withString:@""];
         NSString* filePath = [[NSBundle mainBundle] pathForResource:self.parseSelection ofType:@"vcd"];
@@ -134,7 +149,7 @@
             [self setup];
         }];
     }
-	else
+	else if ([self.parseSelection  rangeOfString:@"http://"].location != NSNotFound || [self.parseSelection  rangeOfString:@"file://"].location != NSNotFound)
 	{
         [VCD loadWithURL:[NSURL URLWithString:self.parseSelection] callback:^(VCD *vcd) {
             if(vcd == nil)
@@ -146,6 +161,12 @@
             [self setup];
         }];
     }
+	else
+	{
+		NSLog(@"Something went wrong Error!");
+		return;
+
+	}
 }
 
 /**
