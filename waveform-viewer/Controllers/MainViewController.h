@@ -19,13 +19,14 @@
 #define MAX_VISIBLE_CELLS 14
 #define MAX_VISIBLE_CELLS_PORT 19
 
-@interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTPlotSpaceDelegate, CPTPlotDelegate, SettingsViewControllerDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTPlotSpaceDelegate, CPTPlotDelegate, SettingsViewControllerDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UIView *mainView;
 @property (nonatomic, weak) IBOutlet CPTGraphHostingView *scatterPlotView;
 @property (nonatomic, weak) IBOutlet UITableView *tblView;
 
 @property (nonatomic, assign) NSInteger countPlot;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (nonatomic, strong) CPTXYGraph *graph;
 
 @property (nonatomic, strong) NSDictionary *signals;

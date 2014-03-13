@@ -28,7 +28,11 @@
     [super viewDidLoad];
     [self.tblView setDelegate:self];
     [self.tblView setDataSource:self];
-    
+    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
+                                          initWithTarget:self action:@selector(handleLongPress:)];
+    lpgr.minimumPressDuration = 1.0; //seconds
+    lpgr.delegate = self;
+    [self.tblView addGestureRecognizer:lpgr];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loadExternalFile:)
                                                  name:@"openVCDDataFile" object:nil];
@@ -96,6 +100,45 @@
     }
     else{
         return CELL_HEIGHT_PORT;
+    }
+}
+
+#pragma mark - Table view gesture delegate
+- (IBAction)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
+{
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        
+        CGPoint p = [gestureRecognizer locationInView:self.tblView];
+        
+        self.selectedIndexPath = [self.tblView indexPathForRowAtPoint:p];
+        if (self.selectedIndexPath == nil) {
+            NSLog(@"long press on table view but not on a row");
+        } else {
+            UITableViewCell *cell = [self.tblView cellForRowAtIndexPath:self.selectedIndexPath];
+            if (cell.isHighlighted) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Signal wirklich entfernen?" delegate:self cancelButtonTitle:@"Abbrechen" otherButtonTitles:@"Ok", nil];
+                [alert show];
+                [alert setDelegate:self];
+            }
+        }
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
+    
+    if([title isEqualToString:@"Ok"])
+    {
+        NSMutableDictionary *signal_copy = [self.signals mutableCopy];
+        UITableViewCell *tblCell = [self.tblView cellForRowAtIndexPath:self.selectedIndexPath];
+        [signal_copy removeObjectForKey:tblCell.textLabel.text];
+        self.signals = [signal_copy mutableCopy];
+        [self setup];
+    }
+    else if([title isEqualToString:@"Abbrechen"])
+    {
+        NSLog(@"Abgebrochen");
     }
 }
 
