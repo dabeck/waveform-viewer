@@ -75,7 +75,13 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CELL_HEIGHT;
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)){
+        return CELL_HEIGHT;
+    }
+    else{
+        return CELL_HEIGHT_PORT;
+    }
 }
 
 #pragma mark - ScrollView delegate
@@ -104,6 +110,7 @@
 	
 	[self setupGraph];
 	[self constructScatterPlot];
+    NSLog(@"%i",self.tblView.visibleCells.count);
 }
 
 #pragma mark - VCD Loading & Parsing
@@ -147,7 +154,6 @@
 - (void) setup
 {
 	maxTime = 0;
-	[self.tblView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
 
     [self.tblView reloadData];
     
@@ -182,14 +188,27 @@
 		}
 	}
     
-	if (self.tblView.visibleCells.count != MAX_VISIBLE_CELLS)
-	{
-		visibleSignalsCount = self.tblView.visibleCells.count;
-	}
-	else
-	{
-		visibleSignalsCount = MAX_VISIBLE_CELLS;
-	}
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)){
+        if (self.tblView.visibleCells.count > MAX_VISIBLE_CELLS)
+        {
+            visibleSignalsCount = self.tblView.visibleCells.count;
+        }
+        else
+        {
+            visibleSignalsCount = MAX_VISIBLE_CELLS;
+        }
+    }
+    else{
+        if (self.tblView.visibleCells.count > MAX_VISIBLE_CELLS_PORT)
+        {
+            visibleSignalsCount = self.tblView.visibleCells.count;
+        }
+        else
+        {
+            visibleSignalsCount = MAX_VISIBLE_CELLS_PORT;
+        }
+    }
 	
 	xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
 	yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
@@ -263,15 +282,6 @@
 	y.majorTickLineStyle		= lineStyle;
 	y.majorTickLength			= INT16_MAX;
 	
-	 
-    if (visibleSignalsCount < MAX_VISIBLE_CELLS)
-	{
-        [self.tblView setContentInset:UIEdgeInsetsMake((MAX_VISIBLE_CELLS - visibleSignalsCount) * CELL_HEIGHT, 0, 0, 0)];
-    }
-    else
-	{
-        [self.tblView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
-    }
     
     [self.tblView reloadData];
 	
@@ -283,7 +293,25 @@
  */
 - (void)constructScatterPlot
 {
-	self.countPlot = -1;
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)){
+        if (self.tblView.visibleCells.count < MAX_VISIBLE_CELLS)
+        {
+            self.countPlot = (MAX_VISIBLE_CELLS - self.tblView.visibleCells.count) - 1;
+        }
+        else{
+            self.countPlot = -1;
+        }
+    }
+    else{
+        if (self.tblView.visibleCells.count < MAX_VISIBLE_CELLS_PORT)
+        {
+            self.countPlot = (MAX_VISIBLE_CELLS_PORT - self.tblView.visibleCells.count) - 1;
+        }
+        else{
+            self.countPlot = -1;
+        }
+    }
 
     CPTScatterPlot *dataSourceLinePlot = [[CPTScatterPlot alloc] init];
     CPTMutableLineStyle *lineStyle = [dataSourceLinePlot.dataLineStyle mutableCopy];// Create graph from theme
@@ -362,7 +390,7 @@
 		{
 			number = @(self.countPlot + 0.4);
 		}
-		NSLog(@"Signal: %@  -- X: %ld Y: %@ RESULT Y: %@", newSig.name, (long)newValue.time, newValue.value, number);
+		//NSLog(@"Signal: %@  -- X: %ld Y: %@ RESULT Y: %@", newSig.name, (long)newValue.time, newValue.value, number);
 		
 		return number;
 	}
