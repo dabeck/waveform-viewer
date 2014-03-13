@@ -15,7 +15,9 @@
 #import "SettingsViewController.h"
 
 #define CELL_HEIGHT 50.29f
+#define CELL_HEIGHT_PORT 50.56f
 #define MAX_VISIBLE_CELLS 14
+#define MAX_VISIBLE_CELLS_PORT 19
 
 @interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTPlotSpaceDelegate, CPTPlotDelegate, SettingsViewControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 
