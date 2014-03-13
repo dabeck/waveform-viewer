@@ -32,6 +32,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loadExternalFile:)
                                                  name:@"openVCDDataFile" object:nil];
+
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+	
 	
     if (!self.parseSelection)
 	{
@@ -41,13 +48,6 @@
 	{
         [self loadSignals];
     }
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-	
-	//scatterPlotView.frame = self.view.bounds;
 }
 
 - (void)didReceiveMemoryWarning
