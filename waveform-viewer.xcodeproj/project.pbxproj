@@ -24,6 +24,7 @@
 		654F2EE218BC9E2700B870B8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654F2ECA18BC9E2700B870B8 /* UIKit.framework */; };
 		654F2EEA18BC9E2700B870B8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 654F2EE818BC9E2700B870B8 /* InfoPlist.strings */; };
 		654F2EEC18BC9E2700B870B8 /* waveform_viewerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 654F2EEB18BC9E2700B870B8 /* waveform_viewerTests.m */; };
+		6568BEA018D1B05C0053684C /* vcdFileType.png in Resources */ = {isa = PBXBuildFile; fileRef = 6568BE9F18D1B05C0053684C /* vcdFileType.png */; };
 		658FAA2F18C08D97006857FD /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 658FAA2E18C08D97006857FD /* Storyboard.storyboard */; };
 		658FAA3218C08DE9006857FD /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 658FAA3118C08DE9006857FD /* MainViewController.m */; };
 		658FAA3E18C0A1EC006857FD /* VCD.m in Sources */ = {isa = PBXBuildFile; fileRef = 658FAA3718C0A1EC006857FD /* VCD.m */; };
@@ -64,6 +65,7 @@
 		654F2EE718BC9E2700B870B8 /* waveform-viewerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "waveform-viewerTests-Info.plist"; sourceTree = "<group>"; };
 		654F2EE918BC9E2700B870B8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		654F2EEB18BC9E2700B870B8 /* waveform_viewerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = waveform_viewerTests.m; sourceTree = "<group>"; };
+		6568BE9F18D1B05C0053684C /* vcdFileType.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vcdFileType.png; sourceTree = "<group>"; };
 		658FAA2E18C08D97006857FD /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		658FAA3018C08DE9006857FD /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		658FAA3118C08DE9006857FD /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 		654F2ECD18BC9E2700B870B8 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6568BE9F18D1B05C0053684C /* vcdFileType.png */,
 				654F2ED818BC9E2700B870B8 /* Images.xcassets */,
 				654F2ECE18BC9E2700B870B8 /* waveform-viewer-Info.plist */,
 				654F2ECF18BC9E2700B870B8 /* InfoPlist.strings */,
@@ -326,6 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3FEE3DA318D067D50070978E /* test.vcd in Resources */,
+				6568BEA018D1B05C0053684C /* vcdFileType.png in Resources */,
 				654F2ED118BC9E2700B870B8 /* InfoPlist.strings in Resources */,
 				3F80DCF618C48D8C0053AEC0 /* very_simple.vcd in Resources */,
 				654F2ED918BC9E2700B870B8 /* Images.xcassets in Resources */,
