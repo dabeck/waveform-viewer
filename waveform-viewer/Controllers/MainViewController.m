@@ -33,10 +33,36 @@
     lpgr.minimumPressDuration = 1.0; //seconds
     lpgr.delegate = self;
     [self.tblView addGestureRecognizer:lpgr];
+    UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(SwipeRecognizerUp:)];
+    swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
+    [self.scatterPlotView addGestureRecognizer:swipeUp];
+    swipeUp.delegate = self;
+    UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(SwipeRecognizerDown:)];
+    swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
+    [self.scatterPlotView addGestureRecognizer:swipeDown];
+    swipeDown.delegate = self;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loadExternalFile:)
                                                  name:@"openVCDDataFile" object:nil];
 
+}
+
+- (void) SwipeRecognizerUp:(UISwipeGestureRecognizer *)sender {
+    // TODO: scroll up
+    NSLog(@"Up !!!!!!");
+    [self.graph removeFromSuperlayer];
+    
+    [self setupGraph];
+    [self constructScatterPlot];
+}
+
+- (void) SwipeRecognizerDown:(UISwipeGestureRecognizer *)sender {
+    // TODO: scroll down
+    NSLog(@"Down !!!!!!");
+    [self.graph removeFromSuperlayer];
+    
+    [self setupGraph];
+    [self constructScatterPlot];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -165,7 +191,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
 	[self.graph removeFromSuperlayer];
-	
+
 	[self setupGraph];
 	[self constructScatterPlot];
 }
@@ -391,7 +417,7 @@
             if ([cell.textLabel.text isEqualToString:name])
 			{
 				CGRect rectInTableView = [self.tblView rectForRowAtIndexPath:[self.tblView indexPathForCell:cell]];
-				NSLog(@"%@ - %f",name, rectInTableView.origin.y);
+//				NSLog(@"%@ - %f",name, rectInTableView.origin.y);
 
                 [visibleSignals addEntriesFromDictionary:@{ name : self.signals[name] }];
 				
