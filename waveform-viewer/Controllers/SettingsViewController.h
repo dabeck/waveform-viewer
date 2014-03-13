@@ -15,7 +15,7 @@
 
 @protocol SettingsViewControllerDelegate <NSObject>
 
-- (void)didChooseValue:(NSString *)value;
+//- (void)didChooseValue:(NSString *)value;
 - (void)didChooseSignals:(NSDictionary *)value;
 
 @end
@@ -23,10 +23,13 @@
 @interface SettingsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
 @property (strong, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
+@property (strong, nonatomic) IBOutlet UITableView *signalTable;
 @property (strong, nonatomic) IBOutlet UITextField *urlField;
 @property (strong, nonatomic) IBOutlet UITableView *fileTable;
+@property (strong, nonatomic) IBOutlet UIButton *parseUrlButton;
 
 @property (strong, nonatomic) NSArray *files;
+@property (strong, nonatomic) NSMutableArray *signalNames;
 @property (strong, nonatomic) NSIndexPath *lastIndexPath;
 
 @property (strong, nonatomic) NSString *selection;
@@ -40,5 +43,6 @@
 
 - (IBAction)btnDoneTapped:(id)sender;
 - (IBAction)changedValue:(id)sender;
+- (IBAction)parseURL:(id)sender;
 
 @end

@@ -478,21 +478,20 @@
 }
 
 #pragma mark - SettingsViewController delegate
-- (void)didChooseValue:(NSString *)value
-{
-	self.parseSelection = value;
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [self.navigationController popViewControllerAnimated:YES];
-    [self loadSignals];
-}
-
-- (void)didChooseSignals:(NSDictionary *)value
-{
-    NSLog(@"signals received");
+//- (void)didChooseValue:(NSString *)value
+//{
 //	self.parseSelection = value;
 //    [self dismissViewControllerAnimated:YES completion:nil];
 //    [self.navigationController popViewControllerAnimated:YES];
 //    [self loadSignals];
+//}
+
+- (void)didChooseSignals:(NSDictionary *)value
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    self.signals = value;
+    [self.navigationController popViewControllerAnimated:YES];
+    [self setup];
 }
 
 @end
