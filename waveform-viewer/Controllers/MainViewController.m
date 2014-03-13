@@ -125,7 +125,6 @@
 	
 	[self setupGraph];
 	[self constructScatterPlot];
-    NSLog(@"%i",self.tblView.visibleCells.count);
 }
 
 #pragma mark - VCD Loading & Parsing
