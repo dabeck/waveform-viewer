@@ -102,17 +102,22 @@
                      withVelocity:(CGPoint)velocity
               targetContentOffset:(inout CGPoint *)targetContentOffset
 {
-	UITableView *tv = (UITableView*)scrollView;
-	NSIndexPath *indexPathOfTopRowAfterScrolling = [tv indexPathForRowAtPoint:*targetContentOffset];
-	CGRect rectForTopRowAfterScrolling = [tv rectForRowAtIndexPath:indexPathOfTopRowAfterScrolling];
-	targetContentOffset->y=rectForTopRowAfterScrolling.origin.y;
+
+    
+//	UITableView *tv = (UITableView*)scrollView;
+//	NSIndexPath *indexPathOfTopRowAfterScrolling = [tv indexPathForRowAtPoint:*targetContentOffset];
+//	CGRect rectForTopRowAfterScrolling = [tv rectForRowAtIndexPath:indexPathOfTopRowAfterScrolling];
+//	targetContentOffset->y=rectForTopRowAfterScrolling.origin.y;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     
-    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.tblView.contentOffset.y) length:CPTDecimalFromDouble(self.maxCellHeight)];
+    self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.signals.count * self.actualHeight);
+    self.scatterPlotView.frame = CGRectMake(0, 0, self.scatterPlotView.frame.size.width, self.signals.count * self.actualHeight);
 }
+
+
 
 #pragma mark - VCD Loading & Parsing
 
@@ -224,7 +229,9 @@
 	xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
 	yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count * self.actualHeight) length:CPTDecimalFromDouble(self.maxCellHeight)];
 	
-	
+    self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.signals.count * self.actualHeight);
+
+    
 	[self setupGraph];
 	[self constructScatterPlot];
 }
@@ -234,7 +241,7 @@
 - (void)setupGraph
 {
 	// Create graph from theme
-    self.graph = [[CPTXYGraph alloc] initWithFrame:self.scatterPlotView.bounds];
+    self.graph = [[CPTXYGraph alloc] initWithFrame:self.scatterPlotView.frame];
 	self.graph.plotAreaFrame.masksToBorder = YES;
 	
 	//Very VERY VERY!!! Important property to reduce memory usage
@@ -317,10 +324,11 @@
         self.countPlot = 0;
     }
  
-
+    
+    
     CPTScatterPlot *dataSourceLinePlot = [[CPTScatterPlot alloc] init];
     CPTMutableLineStyle *lineStyle = [dataSourceLinePlot.dataLineStyle mutableCopy];// Create graph from theme
-	lineStyle.lineColor  = [CPTColor redColor];
+	lineStyle.lineColor  = [CPTColor greenColor];
 
     CPTScatterPlot *boundLinePlot = [[CPTScatterPlot alloc] init];
     boundLinePlot.identifier = @"defined";
@@ -329,6 +337,8 @@
     boundLinePlot.cachePrecision = CPTPlotCachePrecisionAuto;
     boundLinePlot.interpolation  = CPTScatterPlotInterpolationStepped;
     [self.graph addPlot:boundLinePlot];
+    
+    
 }
 
 
@@ -425,10 +435,7 @@
 //			}
 //			break;
 //		case CPTCoordinateY:{
-//            CPTMutablePlotRange *mutableRange = [newRange mutableCopy];
-//            mutableRange.length = CPTDecimalFromFloat(self.tblView.visibleCells.count);
-//            updatedRange = mutableRange;
-//			//updatedRange = ((CPTXYPlotSpace *)space).globalYRange;
+//			updatedRange = ((CPTXYPlotSpace *)space).globalYRange;
 //			break;
 //        }
 //		default:

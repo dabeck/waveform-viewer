@@ -21,7 +21,8 @@
 
 @interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTPlotSpaceDelegate, CPTPlotDelegate, SettingsViewControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 
-@property (strong, nonatomic) IBOutlet UIScrollView *mainView;
+@property (strong, nonatomic) IBOutlet UIView *mainView;
+@property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, weak) IBOutlet CPTGraphHostingView *scatterPlotView;
 @property (nonatomic, weak) IBOutlet UITableView *tblView;
 
