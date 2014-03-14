@@ -15,6 +15,8 @@
     CPTPlotRange *xRange;
     CPTPlotRange *yRange;
     NSInteger visibleSignalsCount;
+    NSMutableArray *allValues;
+    CPTXYPlotSpace *plotSpace;
 }
 
 @end
@@ -90,13 +92,8 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)){
-        return CELL_HEIGHT;
-    }
-    else{
-        return CELL_HEIGHT_PORT;
-    }
+    
+        return self.actualHeight;
 }
 
 #pragma mark - ScrollView delegate
@@ -113,10 +110,8 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-	[self.graph removeFromSuperlayer];
-	
-	[self setupGraph];
-	[self constructScatterPlot];
+    
+    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.tblView.contentOffset.y) length:CPTDecimalFromDouble(self.maxCellHeight)];
 }
 
 #pragma mark - VCD Loading & Parsing
@@ -210,6 +205,8 @@
         {
             visibleSignalsCount = MAX_VISIBLE_CELLS;
         }
+        self.actualHeight = CELL_HEIGHT;
+        self.maxCellHeight = MAX_VISIBLE_CELLS;
     }
     else{
         if (self.tblView.visibleCells.count > MAX_VISIBLE_CELLS_PORT)
@@ -220,10 +217,12 @@
         {
             visibleSignalsCount = MAX_VISIBLE_CELLS_PORT;
         }
+        self.actualHeight = CELL_HEIGHT_PORT;
+        self.maxCellHeight = MAX_VISIBLE_CELLS_PORT;
     }
 	
 	xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
-	yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
+	yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(self.signals.count * self.actualHeight) length:CPTDecimalFromDouble(self.maxCellHeight)];
 	
 	
 	[self setupGraph];
@@ -252,14 +251,19 @@
     self.graph.paddingBottom = 0.0;
 	
     // Setup plot space
-    CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)self.graph.defaultPlotSpace;
+    plotSpace = (CPTXYPlotSpace *)self.graph.defaultPlotSpace;
 	
     plotSpace.allowsUserInteraction = YES;
     
     plotSpace.delegate = self;
     
     plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(maxTime)];
-    plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(visibleSignalsCount)];
+    if(self.signals.count < 14){
+        plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(self.maxCellHeight)];
+    }
+    else{
+        plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0) length:CPTDecimalFromDouble(self.signals.count)];
+    }
     
     plotSpace.xRange = xRange;
     plotSpace.yRange = yRange;
@@ -285,7 +289,7 @@
 	x.majorTickLength			= self.graph.bounds.size.height * 2;
 	x.majorTickLineStyle		= lineStyle;
     x.minorTicksPerInterval     = 0;
-	x.labelOffset				= -(self.graph.bounds.size.height * 2);
+	//x.labelOffset				= -(self.graph.bounds.size.height * 2);
 	x.labelingPolicy			= CPTAxisLabelingPolicyFixedInterval;
 	
 	CPTXYAxis *y = axisSet.yAxis;
@@ -305,56 +309,26 @@
  */
 - (void)constructScatterPlot
 {
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)){
-        if (self.tblView.visibleCells.count < MAX_VISIBLE_CELLS)
-        {
-            self.countPlot = (MAX_VISIBLE_CELLS - self.tblView.visibleCells.count) - 1;
-        }
-        else{
-            self.countPlot = -1;
-        }
+    if (self.tblView.visibleCells.count < self.maxCellHeight)
+    {
+        self.countPlot = (self.maxCellHeight - self.tblView.visibleCells.count);
     }
     else{
-        if (self.tblView.visibleCells.count < MAX_VISIBLE_CELLS_PORT)
-        {
-            self.countPlot = (MAX_VISIBLE_CELLS_PORT - self.tblView.visibleCells.count) - 1;
-        }
-        else{
-            self.countPlot = -1;
-        }
+        self.countPlot = 0;
     }
+ 
 
     CPTScatterPlot *dataSourceLinePlot = [[CPTScatterPlot alloc] init];
     CPTMutableLineStyle *lineStyle = [dataSourceLinePlot.dataLineStyle mutableCopy];// Create graph from theme
 	lineStyle.lineColor  = [CPTColor redColor];
 
-	
-    visibleSignals = [NSMutableDictionary new];
-	
-    // Create a blue plot area
-    for (NSString* name in [self.signals allKeys])
-	{
-        for (UITableViewCell *cell in (self.tblView.visibleCells))
-		{
-            if ([cell.textLabel.text isEqualToString:name])
-			{
-				CGRect rectInTableView = [self.tblView rectForRowAtIndexPath:[self.tblView indexPathForCell:cell]];
-				NSLog(@"%@ - %f",name, rectInTableView.origin.y);
-
-                [visibleSignals addEntriesFromDictionary:@{ name : self.signals[name] }];
-				
-                CPTScatterPlot *boundLinePlot = [[CPTScatterPlot alloc] init];
-                boundLinePlot.identifier = name;
-                boundLinePlot.dataLineStyle = lineStyle;
-                boundLinePlot.dataSource     = self;
-                boundLinePlot.cachePrecision = CPTPlotCachePrecisionAuto;
-                boundLinePlot.interpolation  = CPTScatterPlotInterpolationStepped;
-                [self.graph addPlot:boundLinePlot];
-            }
-            continue;
-        }
-    }
+    CPTScatterPlot *boundLinePlot = [[CPTScatterPlot alloc] init];
+    boundLinePlot.identifier = @"defined";
+    boundLinePlot.dataLineStyle = lineStyle;
+    boundLinePlot.dataSource     = self;
+    boundLinePlot.cachePrecision = CPTPlotCachePrecisionAuto;
+    boundLinePlot.interpolation  = CPTScatterPlotInterpolationStepped;
+    [self.graph addPlot:boundLinePlot];
 }
 
 
@@ -364,100 +338,116 @@
 - (NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
 {
 	// For each line the number of different values e.g. 0,1 = 2 ...
-    NSArray *allVal = [[visibleSignals objectForKey:(NSString*)plot.identifier] valueForKey:@"_values"];
-	return allVal.count;
+    allValues = [NSMutableArray new];
+    
+    for(VCDSignal *newSig in [[self.signals allValues] reverseObjectEnumerator]){
+        for(VCDValue *newVal in [newSig valueForKey:@"_values"]){
+            [allValues addObject: newVal];
+        }
+        VCDValue *next = [[VCDValue alloc]initWithValue:"q" AtTime:0];
+        [allValues addObject:next];
+    }
+    //self.countPlot = -1;
+	return allValues.count;
 }
 
 
 - (NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
 {
-	NSString *plotIdent = (NSString *) plot.identifier;
-	
-    if (![plotIdent isEqualToString:self.currentIdent])
-	{
-        self.countPlot++;
-        self.currentIdent = plotIdent;
-    }
-	
+    //VCDSignal *newSig = [allValues objectAtIndex:index];
+    VCDValue *newValue = [allValues objectAtIndex:index];
+    NSNumber *number = [NSNumber new];
     
-    VCDSignal *newSig = [visibleSignals objectForKey:plotIdent];
-	NSArray *allVal = [newSig valueForKey:@"_values"];
-    VCDValue * newValue = [allVal objectAtIndex:index];
-	
-	
-	if (fieldEnum == CPTScatterPlotFieldY)
-	{
-		NSNumber *number = [NSNumber new];
-		NSString *newValueString = newValue.value;
-		number = [NSNumber numberWithInteger:[newValueString integerValue]];
+    
+    if (fieldEnum == CPTScatterPlotFieldY)
+    {
+        if([[newValue value]isEqualToString:@"q"]){
+            self.countPlot++;
+            return nil;
+        }
+        
+        NSString *newValueString = [newValue value];
+        number = [NSNumber numberWithInteger:[newValueString integerValue]];
 
-		
-		if (![newValueString isEqualToString:@"x"] && ![newValueString isEqualToString:@"z"] && [number isEqualToNumber:@1])
-		{
-			number = @(self.countPlot + 0.8);
-		}
-		else if (![newValueString isEqualToString:@"x"] && ![newValueString isEqualToString:@"z"] && [number isEqualToNumber:@0])
-		{
-			number = @(self.countPlot + 0.2);
-		}
-		else if ([newValueString isEqualToString:@"x"])
-		{
-			number = @(self.countPlot + 0.4);
-		}
+        
+        if (![newValueString isEqualToString:@"x"] && ![newValueString isEqualToString:@"z"] && [number isEqualToNumber:@1])
+        {
+            number = @(self.countPlot + 0.8);
+        }
+        else if (![newValueString isEqualToString:@"x"] && ![newValueString isEqualToString:@"z"] && [number isEqualToNumber:@0])
+        {
+            //return nil;
+            number = @(self.countPlot + 0.2);
+        }
+        else if ([newValueString isEqualToString:@"x"])
+        {
+            //return nil;
+            number = @(self.countPlot + 0.4);
+        }
         else if ([newValueString isEqualToString:@"z"])
-		{
-			number = @(self.countPlot + 0.4);
-		}
-		//NSLog(@"Signal: %@  -- X: %ld Y: %@ RESULT Y: %@", newSig.name, (long)newValue.time, newValue.value, number);
-		
-		return number;
-	}
-	
-	if (fieldEnum == CPTScatterPlotFieldX)
-	{
-		return [NSNumber numberWithInteger:[newValue time]];
-	}
-	
+        {
+            number = @(self.countPlot + 0.4);
+        }
+        //NSLog(@"Signal: %@  -- X: %ld Y: %@ RESULT Y: %@", newSig.name, (long)newValue.time, newValue.value, number);
+        
+        return number;
+    }
+
+    if (fieldEnum == CPTScatterPlotFieldX)
+    {
+        return [NSNumber numberWithInteger:[newValue time]];
+    }
+
     return nil;
 }
 
 #pragma mark - CorePlot delegates
-- (CPTPlotRange *)plotSpace:(CPTPlotSpace *)space
-	  willChangePlotRangeTo:(CPTPlotRange *)newRange
-			  forCoordinate:(CPTCoordinate)coordinate
-{
-	
-    CPTPlotRange *updatedRange = nil;
-	
-    switch (coordinate)
-	{
-		case CPTCoordinateX:
-			if (newRange.locationDouble < 0.0F)
-			{
-				CPTMutablePlotRange *mutableRange = [newRange mutableCopy];
-				mutableRange.location = CPTDecimalFromFloat(0.0);
-				updatedRange = mutableRange;
-                xRange = updatedRange;
-			}
-			else {
-				updatedRange = newRange;
-                xRange = updatedRange;
-			}
-			break;
-		case CPTCoordinateY:
-			updatedRange = ((CPTXYPlotSpace *)space).globalYRange;
-			break;
-		default:
-			break;
-    }
-	
-    return updatedRange;
-}
+//- (CPTPlotRange *)plotSpace:(CPTPlotSpace *)space
+//	  willChangePlotRangeTo:(CPTPlotRange *)newRange
+//			  forCoordinate:(CPTCoordinate)coordinate
+//{
+//	
+//    CPTPlotRange *updatedRange = nil;
+//	
+//    switch (coordinate)
+//	{
+//		case CPTCoordinateX:
+//			if (newRange.locationDouble < 0.0F)
+//			{
+//				CPTMutablePlotRange *mutableRange = [newRange mutableCopy];
+//				mutableRange.location = CPTDecimalFromFloat(0.0);
+//				updatedRange = mutableRange;
+//                xRange = updatedRange;
+//			}
+//			else {
+//				updatedRange = newRange;
+//                xRange = updatedRange;
+//			}
+//			break;
+//		case CPTCoordinateY:{
+//            CPTMutablePlotRange *mutableRange = [newRange mutableCopy];
+//            mutableRange.length = CPTDecimalFromFloat(self.tblView.visibleCells.count);
+//            updatedRange = mutableRange;
+//			//updatedRange = ((CPTXYPlotSpace *)space).globalYRange;
+//			break;
+//        }
+//		default:
+//			break;
+//    }
+//	
+//    return updatedRange;
+//}
 
 #pragma mark - DeviceRotation delegate
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
+    if(UIInterfaceOrientationIsLandscape(fromInterfaceOrientation)){
+        self.actualHeight = CELL_HEIGHT;
+    }
+    else{
+        self.actualHeight = CELL_HEIGHT_PORT;
+    }
 	[self.graph removeFromSuperlayer];
 	[self setup];
 }

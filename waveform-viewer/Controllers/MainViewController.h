@@ -21,7 +21,7 @@
 
 @interface MainViewController : UIViewController <CPTBarPlotDataSource, CPTPlotSpaceDelegate, CPTPlotDelegate, SettingsViewControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, weak) IBOutlet UIView *mainView;
+@property (strong, nonatomic) IBOutlet UIScrollView *mainView;
 @property (nonatomic, weak) IBOutlet CPTGraphHostingView *scatterPlotView;
 @property (nonatomic, weak) IBOutlet UITableView *tblView;
 
@@ -31,5 +31,7 @@
 @property (nonatomic, strong) NSDictionary *signals;
 @property (nonatomic, strong) NSString *currentIdent;
 @property (nonatomic, strong) NSString *parseSelection;
+@property (nonatomic,assign) CGFloat actualHeight;
+@property (nonatomic,assign) NSInteger maxCellHeight;
 
 @end
