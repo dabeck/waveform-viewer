@@ -157,7 +157,6 @@
 			children = (
 				654F2ED518BC9E2700B870B8 /* AppDelegate.h */,
 				654F2ED618BC9E2700B870B8 /* AppDelegate.m */,
-				658FAA2B18C08AD4006857FD /* Models */,
 				658FAA2C18C08ADC006857FD /* Views */,
 				658FAA2D18C08AE1006857FD /* Controllers */,
 				658FAA3318C0A1C6006857FD /* Externals */,
@@ -195,13 +194,6 @@
 				654F2EE818BC9E2700B870B8 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		658FAA2B18C08AD4006857FD /* Models */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		658FAA2C18C08ADC006857FD /* Views */ = {

@@ -34,15 +34,14 @@
 
 @property (strong, nonatomic) NSString *selection;
 @property (strong, nonatomic) NSString *selectionType;
-@property (strong, nonatomic) NSString *parseSelection;
 
 @property (strong, nonatomic) NSDictionary *signals;
 
-@property (nonatomic, assign) id<SettingsViewControllerDelegate> delegate;
+@property (nonatomic, assign) id <SettingsViewControllerDelegate> delegate;
 
 
 - (IBAction)btnDoneTapped:(id)sender;
-- (IBAction)changedValue:(id)sender;
-- (IBAction)parseURL:(id)sender;
+- (IBAction)segmentControlChangedValue:(id)sender;
+- (IBAction)btnOkTapped:(id)sender;
 
 @end

@@ -28,41 +28,16 @@
     [super viewDidLoad];
     [self.tblView setDelegate:self];
     [self.tblView setDataSource:self];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(loadExternalFile:)
+                                                 name:@"openVCDDataFile" object:nil];
+
+	
     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
                                           initWithTarget:self action:@selector(handleLongPress:)];
     lpgr.minimumPressDuration = 1.0; //seconds
     lpgr.delegate = self;
-    [self.tblView addGestureRecognizer:lpgr];
-    UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(SwipeRecognizerUp:)];
-    swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
-    [self.scatterPlotView addGestureRecognizer:swipeUp];
-    swipeUp.delegate = self;
-    UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(SwipeRecognizerDown:)];
-    swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
-    [self.scatterPlotView addGestureRecognizer:swipeDown];
-    swipeDown.delegate = self;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(loadExternalFile:)
-                                                 name:@"openVCDDataFile" object:nil];
-
-}
-
-- (void) SwipeRecognizerUp:(UISwipeGestureRecognizer *)sender {
-    // TODO: scroll up
-    NSLog(@"Up !!!!!!");
-    [self.graph removeFromSuperlayer];
-    
-    [self setupGraph];
-    [self constructScatterPlot];
-}
-
-- (void) SwipeRecognizerDown:(UISwipeGestureRecognizer *)sender {
-    // TODO: scroll down
-    NSLog(@"Down !!!!!!");
-    [self.graph removeFromSuperlayer];
-    
-    [self setupGraph];
-    [self constructScatterPlot];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -74,10 +49,6 @@
 	{
         [self performSegueWithIdentifier:@"modalIdent" sender:self];
     }
-//	else
-//	{
-//        [self loadSignals];
-//    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -92,14 +63,33 @@
     [self constructScatterPlot];
 }
 
-- (void)loadExternalFile:(NSNotification*)notification {
-	NSURL *selectedFile = [notification object];
 
-	NSLog(@"%@", selectedFile);
-	self.parseSelection = [selectedFile absoluteString];
-	[self dismissViewControllerAnimated:NO completion:nil];
-	[self.graph removeFromSuperlayer];
-//	[self loadSignals];
+- (void)loadExternalFile:(NSNotification*)notification
+{
+	NSURL *selectedFile = [notification object];
+	
+    [self loadSignals:selectedFile];
+}
+
+- (void)loadSignals:(NSURL *)path
+{
+    [VCD loadWithURL:path
+			callback:^(VCD *vcd)
+	 {
+		 if(vcd == nil)
+		 {
+			 NSLog(@"VCD Parsing Error!");
+			 return;
+		 }
+		 else
+		 {
+			 [self dismissViewControllerAnimated:YES completion:nil];
+			 self.signals = [vcd signals];
+			 [self.navigationController popViewControllerAnimated:YES];
+			 [self setup];
+		 }
+	 }
+	 ];
 }
 
 #pragma mark - Table view data source
