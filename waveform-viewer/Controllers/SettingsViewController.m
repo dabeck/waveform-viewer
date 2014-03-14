@@ -69,6 +69,8 @@
 		NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
 		[self.fileTable selectRowAtIndexPath:ip animated:NO scrollPosition:0];
 		[self tableView:self.fileTable didSelectRowAtIndexPath:ip];
+//        UITableViewCell *cell = [self.fileTable cellForRowAtIndexPath:ip];
+//        cell.accessoryType = UITableViewCellAccessoryCheckmark;
 	}
 }
 
@@ -104,6 +106,7 @@
 {
     self.signals = [vcd signals];
     self.signalNames = [[NSMutableArray alloc] init];
+    self.signalsToRemove = [[NSMutableArray alloc] init];
 	
     for (VCDSignal *newSig in [self.signals allValues])
     {
@@ -149,8 +152,12 @@
 	{
         static NSString *CellIdentifier = @"SignalCell";
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-        cell.textLabel.text = [self.signalNames objectAtIndex:indexPath.row];
-        [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+        NSString *sigName = [self.signalNames objectAtIndex:indexPath.row];
+        cell.textLabel.text = sigName;
+        if ([self.signalsToRemove indexOfObject:sigName] == NSNotFound)
+		{
+            [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+        }
         return cell;
     }
     return nil;
@@ -162,45 +169,46 @@
 {
     if (tableView == self.fileTable)
 	{
+        // checkmark the selected row
         UITableViewCell *cell = [self.fileTable cellForRowAtIndexPath:indexPath];
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        UITableViewCell *lastCell = [self.fileTable cellForRowAtIndexPath:self.lastIndexPath];
-        lastCell.accessoryType = UITableViewCellAccessoryNone;
-		[self.fileTable deselectRowAtIndexPath:self.lastIndexPath animated:NO];
+//		[self.fileTable deselectRowAtIndexPath:self.lastIndexPath animated:NO];
 		
+        // load signals of the selected file
         NSString *path = [NSString stringWithFormat:@"%@/%@", [self applicationInboxDirectory], [self.files objectAtIndex:indexPath.row]];
         [self loadSignals:[[NSURL alloc] initFileURLWithPath:path isDirectory:false]];
 		
     }
 	else if (tableView == self.signalTable)
 	{
+        // check signal row if it wasn't checked already, uncheck otherwise
 		UITableViewCell *cell = [self.signalTable cellForRowAtIndexPath:indexPath];
 		if (cell.accessoryType == UITableViewCellAccessoryCheckmark)
 		{
 			cell.accessoryType = UITableViewCellAccessoryNone;
-			[self.signalNames removeObject:cell.textLabel.text];
+			[self.signalsToRemove addObject:cell.textLabel.text];
 		}
 		else
 		{
 			cell.accessoryType = UITableViewCellAccessoryCheckmark;
-			[self.signalNames addObject:cell.textLabel.text];
+			[self.signalsToRemove removeObject:cell.textLabel.text];
 		}
     }
 }
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // remember the last selected cell of the file table
     if (tableView == self.fileTable)
 	{
+        UITableViewCell *lastCell = [self.fileTable cellForRowAtIndexPath:indexPath];
+        lastCell.accessoryType = UITableViewCellAccessoryNone;
         self.lastIndexPath = indexPath;
-    }
-	else if (tableView == self.signalTable)
-	{
-        
     }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Make only the cells of the file table deletable
     if (tableView == self.fileTable) {
         return YES;
     } else {
@@ -238,12 +246,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)btnDoneTapped:(id)sender
 {
+    // send all selected signals to main view
     NSMutableDictionary *signal_copy = [[NSMutableDictionary alloc] initWithDictionary:self.signals];
     for (VCDSignal *newSig in [signal_copy allValues])
     {
         NSString *sigName = [newSig name];
 		
-        if ([self.signalNames indexOfObject:sigName] == NSNotFound)
+        if ([self.signalsToRemove indexOfObject:sigName] != NSNotFound)
 		{
             [signal_copy removeObjectForKey:sigName];
         }
@@ -255,6 +264,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)segmentControlChangedValue:(id)sender
 {
+    // change view elements depending on the selection of segmented control
     self.selectionType = [self.segmentedControl titleForSegmentAtIndex:self.segmentedControl.selectedSegmentIndex];
     if ([self.selectionType isEqualToString:@"File"])
 	{
@@ -262,9 +272,18 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
         [self.fileTable setHidden:NO];
         [self.signalTable setHidden:NO];
         [self.parseUrlButton setHidden:YES];
+        
+        if (self.signalNames != nil)
+        {
+            [self reloadSelections];
+        }
     }
 	else
 	{
+        NSIndexPath *selectedIndexPath = [self.fileTable indexPathForSelectedRow];
+        UITableViewCell *cell = [self.fileTable cellForRowAtIndexPath:selectedIndexPath];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        
         [self.urlField setHidden:NO];
         [self.fileTable setHidden:YES];
         [self.signalTable setHidden:YES];
