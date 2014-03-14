@@ -130,6 +130,22 @@
 }
 
 #pragma mark - Table view gesture delegate
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        NSMutableDictionary *signal_copy = [self.signals mutableCopy];
+        UITableViewCell *tblCell = [self.tblView cellForRowAtIndexPath:indexPath];
+        [signal_copy removeObjectForKey:tblCell.textLabel.text];
+        self.signals = [signal_copy copy];
+        [self setup];
+    }
+}
+
 - (IBAction)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
 {
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
