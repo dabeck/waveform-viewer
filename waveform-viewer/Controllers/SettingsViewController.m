@@ -204,11 +204,14 @@
     }
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
     // Make only the cells of the file table deletable
-    if (tableView == self.fileTable) {
+    if (tableView == self.fileTable)
+    {
         return YES;
-    } else {
+    } else
+    {
         return NO;
     }
 }
