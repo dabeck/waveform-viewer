@@ -7,10 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3F80DCF418C48D8C0053AEC0 /* normal.vcd in Resources */ = {isa = PBXBuildFile; fileRef = 3F80DCF118C48D8C0053AEC0 /* normal.vcd */; };
-		3F80DCF518C48D8C0053AEC0 /* simple.vcd in Resources */ = {isa = PBXBuildFile; fileRef = 3F80DCF218C48D8C0053AEC0 /* simple.vcd */; };
-		3F80DCF618C48D8C0053AEC0 /* very_simple.vcd in Resources */ = {isa = PBXBuildFile; fileRef = 3F80DCF318C48D8C0053AEC0 /* very_simple.vcd */; };
-		3FEE3DA318D067D50070978E /* test.vcd in Resources */ = {isa = PBXBuildFile; fileRef = 3FEE3DA218D067D50070978E /* test.vcd */; };
 		507228A7B05A4C5281211832 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ACF787A715640C3A89983D2 /* libPods.a */; };
 		654F2EC718BC9E2700B870B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654F2EC618BC9E2700B870B8 /* Foundation.framework */; };
 		654F2EC918BC9E2700B870B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 654F2EC818BC9E2700B870B8 /* CoreGraphics.framework */; };
@@ -45,10 +41,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3F80DCF118C48D8C0053AEC0 /* normal.vcd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = normal.vcd; sourceTree = "<group>"; };
-		3F80DCF218C48D8C0053AEC0 /* simple.vcd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = simple.vcd; sourceTree = "<group>"; };
-		3F80DCF318C48D8C0053AEC0 /* very_simple.vcd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = very_simple.vcd; sourceTree = "<group>"; };
-		3FEE3DA218D067D50070978E /* test.vcd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.vcd; sourceTree = "<group>"; };
 		654F2EC318BC9E2700B870B8 /* waveform-viewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "waveform-viewer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		654F2EC618BC9E2700B870B8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		654F2EC818BC9E2700B870B8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -109,17 +101,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3F80DCF018C48D590053AEC0 /* testVCD */ = {
-			isa = PBXGroup;
-			children = (
-				3F80DCF118C48D8C0053AEC0 /* normal.vcd */,
-				3F80DCF218C48D8C0053AEC0 /* simple.vcd */,
-				3F80DCF318C48D8C0053AEC0 /* very_simple.vcd */,
-				3FEE3DA218D067D50070978E /* test.vcd */,
-			);
-			name = testVCD;
-			sourceTree = "<group>";
-		};
 		654F2EBA18BC9E2700B870B8 = {
 			isa = PBXGroup;
 			children = (
@@ -218,7 +199,6 @@
 		658FAA3318C0A1C6006857FD /* Externals */ = {
 			isa = PBXGroup;
 			children = (
-				3F80DCF018C48D590053AEC0 /* testVCD */,
 				658FAA3418C0A1EC006857FD /* objCVCD */,
 			);
 			path = Externals;
@@ -320,13 +300,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3FEE3DA318D067D50070978E /* test.vcd in Resources */,
 				6568BEA018D1B05C0053684C /* vcdFileType.png in Resources */,
 				654F2ED118BC9E2700B870B8 /* InfoPlist.strings in Resources */,
-				3F80DCF618C48D8C0053AEC0 /* very_simple.vcd in Resources */,
 				654F2ED918BC9E2700B870B8 /* Images.xcassets in Resources */,
-				3F80DCF418C48D8C0053AEC0 /* normal.vcd in Resources */,
-				3F80DCF518C48D8C0053AEC0 /* simple.vcd in Resources */,
 				658FAA2F18C08D97006857FD /* Storyboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
