@@ -174,24 +174,16 @@
 }
 
 #pragma mark - ScrollView delegate
-//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-//{
-//	if (!decelerate)
-//	{
-//		[self.graph removeFromSuperlayer];
-//		
-//		[self setupGraph];
-//		[self constructScatterPlot];
-//	}
-//}
-//
-//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-//{
-//	[self.graph removeFromSuperlayer];
-//	
-//    [self setupGraph];
-//    [self constructScatterPlot];
-//}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
+                     withVelocity:(CGPoint)velocity
+              targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+	UITableView *tv = (UITableView*)scrollView;
+	NSIndexPath *indexPathOfTopRowAfterScrolling = [tv indexPathForRowAtPoint:*targetContentOffset];
+	CGRect rectForTopRowAfterScrolling = [tv rectForRowAtIndexPath:indexPathOfTopRowAfterScrolling];
+	targetContentOffset->y=rectForTopRowAfterScrolling.origin.y;
+}
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
@@ -398,6 +390,8 @@
     }
 }
 
+
+
 #pragma mark - CorePlot dataSource
 
 - (NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
@@ -439,7 +433,11 @@
 		{
 			number = @(self.countPlot + 0.2);
 		}
-		else if ([newValueString isEqualToString:@"x"] || [newValueString isEqualToString:@"z"])
+		else if ([newValueString isEqualToString:@"x"])
+		{
+			number = @(self.countPlot + 0.4);
+		}
+        else if ([newValueString isEqualToString:@"z"])
 		{
 			number = @(self.countPlot + 0.4);
 		}
