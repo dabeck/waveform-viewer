@@ -70,7 +70,6 @@
 		[self.fileTable selectRowAtIndexPath:ip animated:NO scrollPosition:0];
 		[self tableView:self.fileTable didSelectRowAtIndexPath:ip];
 	}
-        
 }
 
 /**
@@ -220,9 +219,9 @@
             self.signalNames = nil;
 
             [self setupView];
-            [self reloadSelections];
             [self.fileTable reloadData];
             [self.signalTable reloadData];
+            [self reloadSelections];
         }
         else
         {
