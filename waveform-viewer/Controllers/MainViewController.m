@@ -83,10 +83,9 @@
 		 }
 		 else
 		 {
-			 [self dismissViewControllerAnimated:YES completion:nil];
 			 self.signals = [vcd signals];
-			 [self.navigationController popViewControllerAnimated:YES];
 			 [self setup];
+			 [self dismissViewControllerAnimated:NO completion:nil];
 		 }
 	 }
 	 ];
@@ -513,10 +512,9 @@
 #pragma mark - SettingsViewController delegate
 - (void)didChooseSignals:(NSDictionary *)value
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
     self.signals = value;
-    [self.navigationController popViewControllerAnimated:YES];
     [self setup];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
