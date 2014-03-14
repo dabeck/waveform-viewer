@@ -84,19 +84,19 @@
 {
     [VCD loadWithURL:path
 			callback:^(VCD *vcd)
-					 {
-						 if(vcd == nil)
-						 {
-							 NSLog(@"VCD Parsing Error!");
-							 return;
-						 }
-						 else
-						 {
-							 [self.signalTable setHidden:NO];
-						 }
-						 
-						 [self reloadSignalTable:vcd];
-					 }
+     {
+         if(vcd == nil)
+         {
+             NSLog(@"VCD Parsing Error!");
+             return;
+         }
+         else
+         {
+             [self.signalTable setHidden:NO];
+         }
+         
+         [self reloadSignalTable:vcd];
+     }
 	 ];
 }
 
@@ -116,7 +116,7 @@
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *basePath = ([paths count] > 0) ? [paths firstObject] : nil;
-		
+    
     return [NSString stringWithFormat:@"%@/Inbox", basePath];
 }
 
@@ -162,6 +162,10 @@
 {
     if (tableView == self.fileTable)
 	{
+        UITableViewCell *cell = [self.fileTable cellForRowAtIndexPath:indexPath];
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        UITableViewCell *lastCell = [self.fileTable cellForRowAtIndexPath:self.lastIndexPath];
+        lastCell.accessoryType = UITableViewCellAccessoryNone;
 		[self.fileTable deselectRowAtIndexPath:self.lastIndexPath animated:NO];
 		
         NSString *path = [NSString stringWithFormat:@"%@/%@", [self applicationInboxDirectory], [self.files objectAtIndex:indexPath.row]];
@@ -206,7 +210,7 @@
 
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
-    forRowAtIndexPath:(NSIndexPath *)indexPath {
+forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // delete
         NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -217,7 +221,7 @@
         if (success) {
             self.signals = nil;
             self.signalNames = nil;
-
+            
             [self setupView];
             [self.fileTable reloadData];
             [self.signalTable reloadData];
