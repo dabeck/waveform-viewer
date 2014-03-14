@@ -202,47 +202,6 @@
 	[self constructScatterPlot];
 }
 
-#pragma mark - VCD Loading & Parsing
-
-/**
- *  Loads the signals from the selected VCD file
- */
-//- (void)loadSignals
-//{
-//    if ([self.parseSelection  rangeOfString:@"http://"].location == NSNotFound && [self.parseSelection rangeOfString:@"file://"].location == NSNotFound)
-//	{
-//        self.parseSelection = [self.parseSelection stringByReplacingOccurrencesOfString:@".vcd" withString:@""];
-//        NSString* filePath = [[NSBundle mainBundle] pathForResource:self.parseSelection ofType:@"vcd"];
-//		
-//        [VCD loadWithPath:filePath callback:^(VCD *vcd) {
-//            if(vcd == nil) {
-//                NSLog(@"VCD Parsing Error!");
-//                return;
-//            }
-//            self.signals = [vcd signals];
-//            [self setup];
-//        }];
-//    }
-//	else if ([self.parseSelection  rangeOfString:@"http://"].location != NSNotFound || [self.parseSelection  rangeOfString:@"file://"].location != NSNotFound)
-//	{
-//        [VCD loadWithURL:[NSURL URLWithString:self.parseSelection] callback:^(VCD *vcd) {
-//            if(vcd == nil)
-//			{
-//                NSLog(@"VCD Parsing Error!");
-//                return;
-//            }
-//            self.signals = [vcd signals];
-//            [self setup];
-//        }];
-//    }
-//	else
-//	{
-//		NSLog(@"Something went wrong Error!");
-//		return;
-//
-//	}
-//}
-
 /**
  *  Setup the plot values and prepare some plotting defaults
  */

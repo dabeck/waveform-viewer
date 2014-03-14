@@ -183,6 +183,41 @@
     }
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView == self.fileTable) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+    forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // delete
+//        NSFileManager *fileManager = [NSFileManager defaultManager];
+//        NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+//        static NSString *CellIdentifier = @"FileCell";
+//        NSString *fileName = [self.files objectAtIndex:indexPath.row];
+//
+//        NSString *filePath = [documentsPath stringByAppendingPathComponent:fileName];
+//        NSError *error;
+//        BOOL success = [fileManager removeItemAtPath:filePath error:&error];
+//        if (success) {
+////            UIAlertView *removeSuccessFulAlert=[[UIAlertView alloc]initWithTitle:@"" message:@"Successfully removed" delegate:self cancelButtonTitle:@"Close" otherButtonTitles:nil];
+////            [removeSuccessFulAlert show];
+//            [self setupView];
+//            [self.fileTable reloadData];
+//            [self.signalTable reloadData];
+//        }
+//        else
+//        {
+//            NSLog(@"Could not delete file -:%@ ",[error localizedDescription]);
+//        }
+    }
+}
+
 #pragma mark - Actions
 
 - (IBAction)btnDoneTapped:(id)sender
