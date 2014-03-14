@@ -156,6 +156,8 @@
         if ([self.signalsToRemove indexOfObject:sigName] == NSNotFound)
 		{
             [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+        } else {
+            [cell setAccessoryType:UITableViewCellAccessoryNone];
         }
         return cell;
     }
