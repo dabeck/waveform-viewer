@@ -29,15 +29,10 @@
 {
 	[super viewDidAppear:animated];
 	
-	if (self.files.count >= 1)
-	{
-		NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
-		[self.fileTable selectRowAtIndexPath:ip animated:NO scrollPosition:0];
-		[self tableView:self.fileTable didSelectRowAtIndexPath:ip];
-	}
+    [self reloadSelections];
 }
 
-- (void) setupView
+- (void)setupView
 {
     // segment control
     [self.segmentedControl setTitle:@"File" forSegmentAtIndex:0];
@@ -65,6 +60,17 @@
     [signalLayer setMasksToBounds:YES];
     [signalLayer setCornerRadius: 4.0];
     [signalLayer setBorderWidth:1.0];
+}
+
+- (void)reloadSelections
+{
+ 	if (self.files.count >= 1)
+	{
+		NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
+		[self.fileTable selectRowAtIndexPath:ip animated:NO scrollPosition:0];
+		[self tableView:self.fileTable didSelectRowAtIndexPath:ip];
+	}
+        
 }
 
 /**
@@ -204,25 +210,24 @@
     forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // delete
-//        NSFileManager *fileManager = [NSFileManager defaultManager];
-//        NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-//        static NSString *CellIdentifier = @"FileCell";
-//        NSString *fileName = [self.files objectAtIndex:indexPath.row];
-//
-//        NSString *filePath = [documentsPath stringByAppendingPathComponent:fileName];
-//        NSError *error;
-//        BOOL success = [fileManager removeItemAtPath:filePath error:&error];
-//        if (success) {
-////            UIAlertView *removeSuccessFulAlert=[[UIAlertView alloc]initWithTitle:@"" message:@"Successfully removed" delegate:self cancelButtonTitle:@"Close" otherButtonTitles:nil];
-////            [removeSuccessFulAlert show];
-//            [self setupView];
-//            [self.fileTable reloadData];
-//            [self.signalTable reloadData];
-//        }
-//        else
-//        {
-//            NSLog(@"Could not delete file -:%@ ",[error localizedDescription]);
-//        }
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSString *fileName = [self.files objectAtIndex:indexPath.row];
+        NSString *filePath = [[[self applicationInboxDirectory] stringByAppendingString:@"/" ]stringByAppendingString:fileName];
+        NSError *error;
+        BOOL success = [fileManager removeItemAtPath:filePath error:&error];
+        if (success) {
+            self.signals = nil;
+            self.signalNames = nil;
+
+            [self setupView];
+            [self reloadSelections];
+            [self.fileTable reloadData];
+            [self.signalTable reloadData];
+        }
+        else
+        {
+            NSLog(@"Could not delete file -:%@ ",[error localizedDescription]);
+        }
     }
 }
 
@@ -254,12 +259,6 @@
         [self.fileTable setHidden:NO];
         [self.signalTable setHidden:NO];
         [self.parseUrlButton setHidden:YES];
-		//
-		//        if (self.signalNames != nil)
-		//		{
-		//            [self.fileTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:0];
-		////            [self loadSignals];
-		//        }
     }
 	else
 	{
