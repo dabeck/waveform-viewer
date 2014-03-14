@@ -109,11 +109,13 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)){
+    UIInterfaceOrientation orientation = [self interfaceOrientation];
+    if (UIInterfaceOrientationIsLandscape(orientation))
+	{
         return CELL_HEIGHT;
     }
-    else{
+    else
+	{
         return CELL_HEIGHT_PORT;
     }
 }
@@ -233,7 +235,7 @@
 		}
 	}
     
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    UIInterfaceOrientation orientation = [self interfaceOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)){
         if (self.tblView.visibleCells.count > MAX_VISIBLE_CELLS)
         {
@@ -338,7 +340,7 @@
  */
 - (void)constructScatterPlot
 {
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    UIInterfaceOrientation orientation = [self interfaceOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)){
         if (self.tblView.visibleCells.count < MAX_VISIBLE_CELLS)
         {
