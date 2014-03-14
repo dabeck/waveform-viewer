@@ -40,7 +40,7 @@
                                     <segment title="Second"/>
                                 </segments>
                                 <connections>
-                                    <action selector="changedValue:" destination="MGe-ID-Ega" eventType="valueChanged" id="Y2e-kt-Gk3"/>
+                                    <action selector="segmentControlChangedValue:" destination="MGe-ID-Ega" eventType="valueChanged" id="21X-ov-XJ2"/>
                                 </connections>
                             </segmentedControl>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="T4J-pd-6b9">
@@ -98,7 +98,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="parseURL:" destination="MGe-ID-Ega" eventType="touchUpInside" id="AJb-CX-lVH"/>
+                                    <action selector="btnOkTapped:" destination="MGe-ID-Ega" eventType="touchUpInside" id="VaH-8t-aBt"/>
                                 </connections>
                             </button>
                         </subviews>

@@ -17,25 +17,30 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self loadSignals];
+	
     [self.fileTable setDelegate:self];
     [self.fileTable setDataSource:self];
     [self.signalTable setDelegate:self];
     [self.signalTable setDataSource:self];
-    [self initObjects];
-    [self.fileTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:0];
-    
-    
-    
+    [self setupView];
 }
 
-- (void) initObjects
+- (void)viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear:animated];
+	
+	NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
+	[self.fileTable selectRowAtIndexPath:ip animated:NO scrollPosition:0];
+	[self tableView:self.fileTable didSelectRowAtIndexPath:ip];
+}
+
+- (void) setupView
 {
     // segment control
     [self.segmentedControl setTitle:@"File" forSegmentAtIndex:0];
     [self.segmentedControl setTitle:@"URL" forSegmentAtIndex:1];
     self.segmentedControl.selectedSegmentIndex = 0;
-    [self changedValue:self.segmentedControl];
+    [self segmentControlChangedValue:self.segmentedControl];
     
     // url field
     [self.urlField setHidden:YES];
@@ -47,7 +52,7 @@
     NSPredicate *fltr = [NSPredicate predicateWithFormat:@"self ENDSWITH '.vcd'"];
     self.files = [dirContents filteredArrayUsingPredicate:fltr];
     self.selection = [self.files objectAtIndex:0];
-
+	
     CALayer *layer = self.fileTable.layer;
     [layer setMasksToBounds:YES];
     [layer setCornerRadius: 4.0];
@@ -61,49 +66,38 @@
 }
 
 /**
- *  Loads the signals from the selected VCD file
- */
-- (void)loadSignals
-{
-    
-        self.parseSelection = [self.selection stringByReplacingOccurrencesOfString:@".vcd" withString:@""];
-        NSString* filePath = [[NSBundle mainBundle] pathForResource:self.parseSelection ofType:@"vcd"];
-		
-        [VCD loadWithPath:filePath callback:^(VCD *vcd) {
-            if(vcd == nil) {
-                NSLog(@"VCD Parsing Error!");
-                return;
-            }
-            [self reloadSignalTable:vcd];
-        }];
-}
-
-/**
  *  Loads the signals from downloaded VCD file
  *
- *  URLs: 
+ *  URLs:
  *  https://www.uni-kassel.de/eecs/fileadmin/datas/fb16/Fachgebiete/Digitaltechnik/ipadlab/very_simple.vcd
  *  https://www.uni-kassel.de/eecs/fileadmin/datas/fb16/Fachgebiete/Digitaltechnik/ipadlab/simple.vcd
  *  https://www.uni-kassel.de/eecs/fileadmin/datas/fb16/Fachgebiete/Digitaltechnik/ipadlab/pong.vcd
  */
-- (void)loadSignalsFromURL
+- (void)loadSignals:(NSURL *)path
 {
-    [VCD loadWithURL:[NSURL URLWithString:self.parseSelection] callback:^(VCD *vcd) {
-        if(vcd == nil)
-        {
-            NSLog(@"VCD Parsing Error!");
-            return;
-        } else {
-            [self.signalTable setHidden:NO];
-        }
-        [self reloadSignalTable:vcd];
-    }];
+    [VCD loadWithURL:path
+			callback:^(VCD *vcd)
+					 {
+						 if(vcd == nil)
+						 {
+							 NSLog(@"VCD Parsing Error!");
+							 return;
+						 }
+						 else
+						 {
+							 [self.signalTable setHidden:NO];
+						 }
+						 
+						 [self reloadSignalTable:vcd];
+					 }
+	 ];
 }
 
 - (void)reloadSignalTable:(VCD *)vcd
 {
     self.signals = [vcd signals];
     self.signalNames = [[NSMutableArray alloc] init];
+	
     for (VCDSignal *newSig in [self.signals allValues])
     {
         [self.signalNames addObject:[newSig name]];
@@ -115,22 +109,29 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.fileTable) {
+    if (tableView == self.fileTable)
+	{
         return self.files.count;
-    } else if (tableView == self.signalTable) {
+    }
+	else if (tableView == self.signalTable)
+	{
         return self.signalNames.count;
     }
+	
     return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView == self.fileTable) {
+    if (tableView == self.fileTable)
+	{
         static NSString *CellIdentifier = @"FileCell";
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
         cell.textLabel.text = [self.files objectAtIndex:indexPath.row];
         return cell;
-    } else if (tableView == self.signalTable) {
+    }
+	else if (tableView == self.signalTable)
+	{
         static NSString *CellIdentifier = @"SignalCell";
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
         cell.textLabel.text = [self.signalNames objectAtIndex:indexPath.row];
@@ -144,53 +145,64 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView == self.fileTable) {
-        self.selection = [self.files objectAtIndex:indexPath.row];
-        [self.fileTable deselectRowAtIndexPath:self.lastIndexPath animated:NO];
-        [self loadSignals];
-    } else if (tableView == self.signalTable) {
-        
+    if (tableView == self.fileTable)
+	{
+		[self.fileTable deselectRowAtIndexPath:self.lastIndexPath animated:NO];
+		
+        NSString *path = [self.files objectAtIndex:indexPath.row];
+		path = [path stringByReplacingOccurrencesOfString:@".vcd" withString:@""];
+		path = [[NSBundle mainBundle] pathForResource:path ofType:@"vcd"];
+        [self loadSignals:[[NSURL alloc] initFileURLWithPath:path isDirectory:false]];
+		
+    }
+	else if (tableView == self.signalTable)
+	{
+		UITableViewCell *cell = [self.signalTable cellForRowAtIndexPath:indexPath];
+		if (cell.accessoryType == UITableViewCellAccessoryCheckmark)
+		{
+			cell.accessoryType = UITableViewCellAccessoryNone;
+			[self.signalNames removeObject:cell.textLabel.text];
+		}
+		else
+		{
+			cell.accessoryType = UITableViewCellAccessoryCheckmark;
+			[self.signalNames addObject:cell.textLabel.text];
+		}
     }
 }
 
--(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView == self.fileTable) {
+    if (tableView == self.fileTable)
+	{
         self.lastIndexPath = indexPath;
-    } else if (tableView == self.signalTable) {
+    }
+	else if (tableView == self.signalTable)
+	{
         
     }
-}
-
--(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [self.signalTable cellForRowAtIndexPath:indexPath];
-    if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
-        cell.accessoryType = UITableViewCellAccessoryNone;
-        [self.signalNames removeObject:cell.textLabel.text];
-    } else {
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        [self.signalNames addObject:cell.textLabel.text];
-    }
-    return indexPath;
 }
 
 #pragma mark - Actions
 
 - (IBAction)btnDoneTapped:(id)sender
 {
-    NSMutableDictionary *signal_copy = [self.signals mutableCopy];
+    NSMutableDictionary *signal_copy = [[NSMutableDictionary alloc] initWithDictionary:self.signals];
     for (VCDSignal *newSig in [signal_copy allValues])
     {
         NSString *sigName = [newSig name];
-        if ([self.signalNames indexOfObject:sigName] == NSNotFound) {
+		
+        if ([self.signalNames indexOfObject:sigName] == NSNotFound)
+		{
             [signal_copy removeObjectForKey:sigName];
         }
     }
+	
     self.signals = [signal_copy mutableCopy];
     [self.delegate didChooseSignals:self.signals];
 }
 
-- (IBAction)changedValue:(id)sender
+- (IBAction)segmentControlChangedValue:(id)sender
 {
     self.selectionType = [self.segmentedControl titleForSegmentAtIndex:self.segmentedControl.selectedSegmentIndex];
     if ([self.selectionType isEqualToString:@"File"])
@@ -199,10 +211,12 @@
         [self.fileTable setHidden:NO];
         [self.signalTable setHidden:NO];
         [self.parseUrlButton setHidden:YES];
-        if (self.signalNames != nil) {
-            [self.fileTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:0];
-            [self loadSignals];
-        }
+		//
+		//        if (self.signalNames != nil)
+		//		{
+		//            [self.fileTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:0];
+		////            [self loadSignals];
+		//        }
     }
 	else
 	{
@@ -213,9 +227,10 @@
     }
 }
 
-- (IBAction)parseURL:(id)sender {
-    self.parseSelection = self.urlField.text;
-    [self loadSignalsFromURL];
+- (IBAction)btnOkTapped:(id)sender
+{
+	[self.urlField endEditing:YES];
+    [self loadSignals:[NSURL URLWithString:self.urlField.text]];
 }
 
 - (void)didReceiveMemoryWarning
