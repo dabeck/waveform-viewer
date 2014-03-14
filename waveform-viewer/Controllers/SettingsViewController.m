@@ -210,8 +210,9 @@
     if (tableView == self.fileTable)
     {
         return YES;
-    } else
-    {
+    }
+	else
+	{
         return NO;
     }
 }
