@@ -69,8 +69,6 @@
 		NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
 		[self.fileTable selectRowAtIndexPath:ip animated:NO scrollPosition:0];
 		[self tableView:self.fileTable didSelectRowAtIndexPath:ip];
-//        UITableViewCell *cell = [self.fileTable cellForRowAtIndexPath:ip];
-//        cell.accessoryType = UITableViewCellAccessoryCheckmark;
 	}
 }
 
@@ -141,6 +139,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // fill tables and check all signals
     if (tableView == self.fileTable)
 	{
         static NSString *CellIdentifier = @"FileCell";
@@ -172,7 +171,6 @@
         // checkmark the selected row
         UITableViewCell *cell = [self.fileTable cellForRowAtIndexPath:indexPath];
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
-//		[self.fileTable deselectRowAtIndexPath:self.lastIndexPath animated:NO];
 		
         // load signals of the selected file
         NSString *path = [NSString stringWithFormat:@"%@/%@", [self applicationInboxDirectory], [self.files objectAtIndex:indexPath.row]];
@@ -203,7 +201,6 @@
 	{
         UITableViewCell *lastCell = [self.fileTable cellForRowAtIndexPath:indexPath];
         lastCell.accessoryType = UITableViewCellAccessoryNone;
-        self.lastIndexPath = indexPath;
     }
 }
 
@@ -216,11 +213,10 @@
     }
 }
 
-// Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // delete
+        // delete selected file
         NSFileManager *fileManager = [NSFileManager defaultManager];
         NSString *fileName = [self.files objectAtIndex:indexPath.row];
         NSString *filePath = [[[self applicationInboxDirectory] stringByAppendingString:@"/" ]stringByAppendingString:fileName];
@@ -293,6 +289,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)btnOkTapped:(id)sender
 {
+    // parse URL
 	[self.urlField endEditing:YES];
     [self loadSignals:[NSURL URLWithString:self.urlField.text]];
 }
@@ -300,7 +297,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

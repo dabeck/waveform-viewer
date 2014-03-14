@@ -15,7 +15,6 @@
 
 @protocol SettingsViewControllerDelegate <NSObject>
 
-//- (void)didChooseValue:(NSString *)value;
 - (void)didChooseSignals:(NSDictionary *)value;
 
 @end
@@ -31,7 +30,6 @@
 @property (strong, nonatomic) NSArray *files;
 @property (strong, nonatomic) NSMutableArray *signalNames;
 @property (strong, nonatomic) NSMutableArray *signalsToRemove;
-@property (strong, nonatomic) NSIndexPath *lastIndexPath;
 
 @property (strong, nonatomic) NSString *selection;
 @property (strong, nonatomic) NSString *selectionType;

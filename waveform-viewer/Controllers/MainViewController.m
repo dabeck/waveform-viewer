@@ -372,8 +372,6 @@
 		{
             if ([cell.textLabel.text isEqualToString:name])
 			{
-				CGRect rectInTableView = [self.tblView rectForRowAtIndexPath:[self.tblView indexPathForCell:cell]];
-//				NSLog(@"%@ - %f",name, rectInTableView.origin.y);
 
                 [visibleSignals addEntriesFromDictionary:@{ name : self.signals[name] }];
 				
@@ -441,7 +439,6 @@
 		{
 			number = @(self.countPlot + 0.4);
 		}
-		//NSLog(@"Signal: %@  -- X: %ld Y: %@ RESULT Y: %@", newSig.name, (long)newValue.time, newValue.value, number);
 		
 		return number;
 	}
