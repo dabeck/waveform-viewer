@@ -196,10 +196,14 @@
     }
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (tableView == self.fileTable) {
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.fileTable)
+	{
         return YES;
-    } else {
+    }
+	else
+	{
         return NO;
     }
 }
