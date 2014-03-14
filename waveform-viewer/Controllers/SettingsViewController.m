@@ -29,9 +29,12 @@
 {
 	[super viewDidAppear:animated];
 	
-	NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
-	[self.fileTable selectRowAtIndexPath:ip animated:NO scrollPosition:0];
-	[self tableView:self.fileTable didSelectRowAtIndexPath:ip];
+	if (self.files.count >= 1)
+	{
+		NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
+		[self.fileTable selectRowAtIndexPath:ip animated:NO scrollPosition:0];
+		[self tableView:self.fileTable didSelectRowAtIndexPath:ip];
+	}
 }
 
 - (void) setupView
@@ -46,12 +49,11 @@
     [self.urlField setHidden:YES];
     
     // file selection menu
-    NSString *bundleRoot = [[NSBundle mainBundle] bundlePath];
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSArray *dirContents = [fm contentsOfDirectoryAtPath:bundleRoot error:nil];
+    NSArray *dirContents = [fm contentsOfDirectoryAtPath:[self applicationInboxDirectory] error:nil];
     NSPredicate *fltr = [NSPredicate predicateWithFormat:@"self ENDSWITH '.vcd'"];
     self.files = [dirContents filteredArrayUsingPredicate:fltr];
-    self.selection = [self.files objectAtIndex:0];
+    self.selection = [self.files firstObject];
 	
     CALayer *layer = self.fileTable.layer;
     [layer setMasksToBounds:YES];
@@ -105,6 +107,14 @@
     [self.signalTable reloadData];
 }
 
+- (NSString *)applicationInboxDirectory
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = ([paths count] > 0) ? [paths firstObject] : nil;
+		
+    return [NSString stringWithFormat:@"%@/Inbox", basePath];
+}
+
 #pragma mark - TableView dataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -149,9 +159,7 @@
 	{
 		[self.fileTable deselectRowAtIndexPath:self.lastIndexPath animated:NO];
 		
-        NSString *path = [self.files objectAtIndex:indexPath.row];
-		path = [path stringByReplacingOccurrencesOfString:@".vcd" withString:@""];
-		path = [[NSBundle mainBundle] pathForResource:path ofType:@"vcd"];
+        NSString *path = [NSString stringWithFormat:@"%@/%@", [self applicationInboxDirectory], [self.files objectAtIndex:indexPath.row]];
         [self loadSignals:[[NSURL alloc] initFileURLWithPath:path isDirectory:false]];
 		
     }
