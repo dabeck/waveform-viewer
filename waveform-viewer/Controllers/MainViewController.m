@@ -112,9 +112,9 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    
-    self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.signals.count * self.actualHeight);
-    self.scatterPlotView.frame = CGRectMake(0, 0, self.scatterPlotView.frame.size.width, self.signals.count * self.actualHeight);
+//    
+//    self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.signals.count * self.actualHeight);
+//    self.scatterPlotView.frame = CGRectMake(0, 0, self.scatterPlotView.frame.size.width, self.signals.count * self.actualHeight);
 }
 
 
